@@ -1,4 +1,4 @@
-# Enumeration-aware Molecular Transformers for Representation Learning
+# TRANSFORMERS FOR MOLECULAR PROPERTY PREDICTION: DOMAIN ADAPTATION EFFICIENTLY IMPROVES PERFORMANCE.
 
 
 ## Setup
