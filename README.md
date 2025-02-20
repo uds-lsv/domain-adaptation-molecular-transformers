@@ -1,4 +1,4 @@
-# TRANSFORMERS FOR MOLECULAR PROPERTY PREDICTION: DOMAIN ADAPTATION EFFICIENTLY IMPROVES PERFORMANCE.
+# Transformers for Molecular Property Prediction: Domain Adaptation Efficiently Improves Performance
 
 
 ## Setup
