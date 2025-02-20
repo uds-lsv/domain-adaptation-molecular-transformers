@@ -1,0 +1,6 @@
+adme_microsom_stab_h, regression
+adme_microsom_stab_r, regression
+adme_permeability, regression
+adme_ppb_h, regression
+adme_ppb_r, regression
+adme_solubility, regression

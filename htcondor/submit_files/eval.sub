@@ -1,0 +1,17 @@
+universe                = docker
+docker_image            = docker.lsv.uni-saarland.de/mrdupont/eamt:v1
+executable              = /nethome/mrdupont/enumeration-aware-molecule-transformers/htcondor/eval.py
+environment             = "PROJECT_ROOT=/nethome/mrdupont/enumeration-aware-molecule-transformers"
+initialdir              = /nethome/mrdupont/
+output                  = /data/users/mrdupont/da4mt/logs/eval.$(ClusterId).$(ProcId).out
+error                   = /data/users/mrdupont/da4mt/logs/eval.$(ClusterId).$(ProcId).err
+log                     = /data/users/mrdupont/da4mt/logs/eval.$(ClusterId).$(ProcId).log
+stream_output           = True
+transfer_output         = True
+request_CPUs = 12
+# request_GPUS = 1
+requirements = (machine != "cl16lx.lsv.uni-saarland.de") && (machine != "cl17lx.lsv.uni-saarland.de") && (machine != "cl18lx.lsv.uni-saarland.de")
+request_memory = 15G
+
+arguments = "$(dataset) $(task) $(targets)"
+queue dataset, task, targets from eval_joblist.txt

@@ -1,0 +1,21 @@
+universe                = docker
+docker_image            = docker.lsv.uni-saarland.de/mrdupont/eamt:v1
+executable              = /nethome/mrdupont/enumeration-aware-molecule-transformers/htcondor/embed.py
+environment             = "PROJECT_ROOT=/nethome/mrdupont/enumeration-aware-molecule-transformers"
+initialdir              = /nethome/mrdupont/
+output                  = /data/users/mrdupont/da4mt/logs/embed.$(ClusterId).$(ProcId).out
+error                   = /data/users/mrdupont/da4mt/logs/embed.$(ClusterId).$(ProcId).err
+log                     = /data/users/mrdupont/da4mt/logs/embed.$(ClusterId).$(ProcId).log
+stream_output           = True
+transfer_output         = True
+request_CPUs = 8
+requirements = ((machine == "cl16lx.lsv.uni-saarland.de") || (machine == "cl17lx.lsv.uni-saarland.de") || (machine == "cl18lx.lsv.uni-saarland.de"))
+request_memory = 35G
+queue arguments from (
+    "adme_microsom_stab_h"
+    "adme_microsom_stab_r"
+    "adme_permeability"
+    "adme_ppb_h"
+    "adme_ppb_r"
+    "adme_solubility"
+)

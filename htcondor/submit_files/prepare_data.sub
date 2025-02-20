@@ -1,0 +1,14 @@
+universe                = docker
+docker_image            = docker.lsv.uni-saarland.de/mrdupont/eamt:v1
+executable              = /nethome/mrdupont/enumeration-aware-molecule-transformers/htcondor/prepare_data.sh
+environment             = "PROJECT_ROOT=/nethome/mrdupont/enumeration-aware-molecule-transformers"
+initialdir              = /nethome/mrdupont/
+output                  = /data/users/mrdupont/da4mt/logs/prepare_data.$(ClusterId).out
+error                   = /data/users/mrdupont/da4mt/logs/prepare_data.$(ClusterId).err
+log                     = /data/users/mrdupont/da4mt/logs/prepare_data.$(ClusterId).log
+stream_output           = True
+transfer_output         = True
+request_CPUs = 25
+requirements = (machine == "cl13lx.lsv.uni-saarland.de")
+request_memory = 125G
+queue 1
