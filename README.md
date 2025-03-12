@@ -8,11 +8,18 @@ All experiments have been executed with python `3.10.14`, using the provided Doc
 ```bash
 pip install -r requirements.txt
 ```
+
+We also need the `useful_rdkit_utils` package, which requires `python>=3.11` but still works fine with
+our python version.
+```
+pip install --ignore-python-version useful_rdkit_utils==0.74
+```
+
 Install the DataSAIL dependencies:
 ```bash
 mamba install -c kalininalab -c conda-forge -c bioconda datasail
 ```
-Because the newer Nvidia Docker images no longer include mamba/conda, datasail is not installed under the default `PYTHONPATH`, but rather `/opt/conda/lib/python3.10/site-packages`. See 
+Because the newer Nvidia Docker images no longer include mamba/conda, datasail is not installed under the default `PYTHONPATH`, but rather `/opt/conda/lib/python3.10/site-packages`. See
 `htcondor/prepare_data.sh` for more details.
 
 ### Overview
@@ -59,7 +66,7 @@ In general the dataset preprocessing encompasses 2 steps:
 1. Precomputing the necessary labels for pretraining and domain adaptation, i.e. Physiochemical properties and triples for contrastive learning
 2. Splitting the datasets into `k` folds. `k` needs to be determined by hand
 
-The first step can be done by running 
+The first step can be done by running
 
 ```bash
 python -m da4mt prepare dataset <csvfile> -o <outputdir>
@@ -96,9 +103,9 @@ Pretraining can be executed with
 ```bash
 python -m da4mt pretrain <datadir> <outputdir> --train-mlm --train-size <n>
 ```
-Pretraining creates new directory at `outputdir` with naming scheme following 
+Pretraining creates new directory at `outputdir` with naming scheme following
 `<pretrain-scheme>-bert-<size>`, where `pretrain-scheme` is either `mlm` or `mtr`
-depending on the pretraining objective. train-size should be a fraction `n` between `0` and `1`, specifying the percentage of the Guacamole pretraining dataset to use. The first `n%` of the dataset will be used. In case a more diverse selection of the data should be made, e.g. by clustering the pretraining dataset according to scaffolds, as done in the data preprocessing step, 
+depending on the pretraining objective. train-size should be a fraction `n` between `0` and `1`, specifying the percentage of the Guacamole pretraining dataset to use. The first `n%` of the dataset will be used. In case a more diverse selection of the data should be made, e.g. by clustering the pretraining dataset according to scaffolds, as done in the data preprocessing step,
 one may pass `--cluster-file <file>.json`. The file should only contain a list with the indices of the training data.
 
 See `htcondor/pretrain.sh`
@@ -139,4 +146,4 @@ The output file will follow the same structure as the embeddings file -  for eac
 ## Manuscript analysis
 
 All figures and analysis used in the manuscript can be found and re-done by following the README file in the
-[analysis_noteboks](analysis_noteboks) folder. 
+[analysis_noteboks](analysis_noteboks) folder.

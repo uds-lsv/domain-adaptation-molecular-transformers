@@ -23,6 +23,6 @@ h5py==3.11
 # Install using pip install --ignore-requires-python
 # Newer versions work, but require a higher Python version, but
 # Nvidia PyTorch docking container requires Python 3.10
-useful_rdkit_utils==0.74
+#useful_rdkit_utils==0.74
 # For datasail
 grakel==0.1.10

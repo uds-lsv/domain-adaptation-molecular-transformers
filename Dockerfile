@@ -30,6 +30,7 @@ RUN python3 -m pip install --progress-bar off --no-cache-dir --upgrade pip
 # Install dependencies (this is not necessary when using an *external* mini conda environment)
 COPY requirements.txt .
 RUN python3 -m pip install --progress-bar off -r requirements.txt
+RUN python3 -m pip install --progress-bar off --ignore-python-version useful_rdkit_utils==0.74
 
 # We require conda for datasail
 ## Copied from https://github.com/j3soon/docker-pytorch-conda/blob/master/Dockerfile
