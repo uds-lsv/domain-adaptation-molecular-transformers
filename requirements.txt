@@ -20,5 +20,6 @@ wandb==0.16.6
 accelerate==0.29.3
 seaborn==0.13.2
 h5py==3.11
+useful_rdkit_utils==0.3.12
 # For datasail
 grakel==0.1.10
