@@ -95,7 +95,7 @@ def main():
             "-m",
             "pip",
             "install",
-            "--ignore-python-version",
+            "--ignore-requires-python",
             "useful_rdkit_utils",
         ]
     )

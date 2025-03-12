@@ -12,7 +12,7 @@ pip install -r requirements.txt
 We also need the `useful_rdkit_utils` package, which requires `python>=3.11` but still works fine with
 our python version.
 ```
-pip install --ignore-python-version useful_rdkit_utils==0.74
+pip install --ignore-requires-python useful_rdkit_utils==0.74
 ```
 
 Install the DataSAIL dependencies:
