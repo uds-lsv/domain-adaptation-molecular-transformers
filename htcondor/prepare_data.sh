@@ -9,7 +9,7 @@ source ${PROJECT_ROOT}/htcondor/setup.sh
 python -m da4mt prepare pretraining -o $DATA_DIR
 
 
-ADME_DIR=/data/users/mrdupont/da4mt/adme_polaris
+ADME_DIR=/data/users/mrdupont/emtrl/adme_polaris
 python -m da4mt prepare dataset $ADME_DIR/adme_microsom_stab_h.csv -o $DATA_DIR
 python -m da4mt prepare dataset $ADME_DIR/adme_microsom_stab_r.csv -o $DATA_DIR
 python -m da4mt prepare dataset $ADME_DIR/adme_permeability.csv -o $DATA_DIR
@@ -18,7 +18,7 @@ python -m da4mt prepare dataset $ADME_DIR/adme_ppb_r.csv -o $DATA_DIR
 python -m da4mt prepare dataset $ADME_DIR/adme_solubility.csv -o $DATA_DIR
 
 # Splitting
-ADME_DIR=/data/users/mrdupont/da4mt/adme_polaris
+ADME_DIR=/data/users/mrdupont/emtrl/adme_polaris
 python -m da4mt prepare splits $ADME_DIR/adme_microsom_stab_h.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
 python -m da4mt prepare splits $ADME_DIR/adme_microsom_stab_r.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
 python -m da4mt prepare splits $ADME_DIR/adme_permeability.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5

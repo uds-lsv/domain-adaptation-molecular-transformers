@@ -16,17 +16,20 @@ class Paths(NamedTuple):
 
 
 PATHS = Paths(
-    DATA_DIR=pathlib.Path("/data/users/mrdupont/da4mt/data/"),
+    DATA_DIR=pathlib.Path("/data/users/mrdupont/emtrl/data/"),
     # RESULT_DIR=pathlib.Path("/nethome/mrdupont/enumeration-aware-molecule-transformers/results"),
     # RESULT_DIR=pathlib.Path("/nethome/mrdupont/enumeration-aware-molecule-transformers/results/results_with_clustered_pretraining_cleaned_adme_microsom"),
-    RESULT_DIR=pathlib.Path("/nethome/mrdupont/enumeration-aware-molecule-transformers/results/results_with_clustered_pretraining_cleaned_adme_microsom_including_mtr_mtr_30"),
-    MODEL_DIR=pathlib.Path("/data/users/mrdupont/da4mt/models"),
-    # PRETRAIN_DIR=pathlib.Path("/data/users/mrdupont/da4mt/models/pretrained"),
-    PRETRAIN_DIR=pathlib.Path("/data/users/mrdupont/da4mt/models/pretrained_cluster"),
-    # ADAPT_DIR=pathlib.Path("/data/users/mrdupont/da4mt/models/adapted"),
-    ADAPT_DIR=pathlib.Path("/data/users/mrdupont/da4mt/models/adapted_cluster"),
-    WANDB_DIR=pathlib.Path("/data/users/mrdupont/da4mt/wandb"),
-    EMBED_DIR=pathlib.Path("/data/users/mrdupont/da4mt/embeddings")
+    # RESULT_DIR=pathlib.Path("/nethome/mrdupont/enumeration-aware-molecule-transformers/results/results_with_clustered_pretraining_cleaned_adme_microsom_including_mtr_mtr_30"),
+    RESULT_DIR=pathlib.Path(
+        "/nethome/mrdupont/enumeration-aware-molecule-transformers/results/"
+    ),
+    MODEL_DIR=pathlib.Path("/data/users/mrdupont/emtrl/models"),
+    # PRETRAIN_DIR=pathlib.Path("/data/users/mrdupont/emtrl/models/pretrained"),
+    PRETRAIN_DIR=pathlib.Path("/data/users/mrdupont/emtrl/models/pretrained_cluster"),
+    # ADAPT_DIR=pathlib.Path("/data/users/mrdupont/emtrl/models/adapted"),
+    ADAPT_DIR=pathlib.Path("/data/users/mrdupont/emtrl/models/adapted_cluster"),
+    WANDB_DIR=pathlib.Path("/data/users/mrdupont/emtrl/wandb"),
+    EMBED_DIR=pathlib.Path("/data/users/mrdupont/emtrl/embeddings"),
 )
 
 ADME_DATASETS = [
@@ -134,7 +137,7 @@ def run_command(cmd: List[str]) -> None:
 
 
 # Execute setup functions globally
-setup_environment({k: str(v) for k,v in PATHS._asdict().items()})
+setup_environment({k: str(v) for k, v in PATHS._asdict().items()})
 load_wandb_credentials()
 change_to_project_root()
 print_debug_info()

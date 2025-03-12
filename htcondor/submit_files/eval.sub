@@ -3,9 +3,9 @@ docker_image            = docker.lsv.uni-saarland.de/mrdupont/eamt:v1
 executable              = /nethome/mrdupont/enumeration-aware-molecule-transformers/htcondor/eval.py
 environment             = "PROJECT_ROOT=/nethome/mrdupont/enumeration-aware-molecule-transformers"
 initialdir              = /nethome/mrdupont/
-output                  = /data/users/mrdupont/da4mt/logs/eval.$(ClusterId).$(ProcId).out
-error                   = /data/users/mrdupont/da4mt/logs/eval.$(ClusterId).$(ProcId).err
-log                     = /data/users/mrdupont/da4mt/logs/eval.$(ClusterId).$(ProcId).log
+output                  = /data/users/mrdupont/emtrl/logs/eval.$(ClusterId).$(ProcId).out
+error                   = /data/users/mrdupont/emtrl/logs/eval.$(ClusterId).$(ProcId).err
+log                     = /data/users/mrdupont/emtrl/logs/eval.$(ClusterId).$(ProcId).log
 stream_output           = True
 transfer_output         = True
 request_CPUs = 12
