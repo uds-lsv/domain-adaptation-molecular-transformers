@@ -44,7 +44,9 @@ def eval(args):
         if ds_name.startswith("adme_microsom_stab"):
             ds_name += "_cleaned"
 
-        ds_source = file.attrs["dataset_path"]
+        ds_source = args.datadir / ds_name
+        assert ds_source.exists()
+
         df = pd.read_csv(ds_source)
         # Cross validate expects a SMILES column
         df = df.rename(columns={"smiles": "SMILES"})

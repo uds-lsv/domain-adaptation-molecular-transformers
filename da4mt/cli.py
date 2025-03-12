@@ -311,6 +311,14 @@ def add_eval_cv_args(parser: argparse.ArgumentParser):
         required=True,
         help="Path to HDF5 file containing embeddings",
     )
+
+    parser.add_argument(
+        "--data-dir",
+        type=pathlib.Path,
+        required=True,
+        help="Directory containing the datasets",
+    )
+
     parser.add_argument(
         "--output-dir",
         required=True,

@@ -21,6 +21,8 @@ def run_eval(embedding_file, outdir):
         "eval",
         "--embedding-file",
         str(embedding_file),
+        "--data-dir",
+        str(PATHS.DATA_DIR),
         "--output-dir",
         str(outdir),
     ]
