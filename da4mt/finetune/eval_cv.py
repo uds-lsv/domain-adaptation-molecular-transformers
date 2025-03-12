@@ -44,7 +44,7 @@ def eval(args):
         if ds_name.startswith("adme_microsom_stab"):
             ds_name += "_cleaned"
 
-        ds_source = args.data_dir / ds_name
+        ds_source = args.data_dir / f"{ds_name}.csv"
         assert ds_source.exists()
 
         df = pd.read_csv(ds_source)
