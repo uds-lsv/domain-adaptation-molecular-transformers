@@ -20,6 +20,9 @@ wandb==0.16.6
 accelerate==0.29.3
 seaborn==0.13.2
 h5py==3.11
-useful_rdkit_utils==0.3.12
+# Install using pip install --ignore-requires-python
+# Newer versions work, but require a higher Python version, but
+# Nvidia PyTorch docking container requires Python 3.10
+useful_rdkit_utils==0.74
 # For datasail
 grakel==0.1.10
