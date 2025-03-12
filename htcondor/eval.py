@@ -105,7 +105,7 @@ def main():
     embedding_file = PATHS.EMBED_DIR / f"{args.dataset}_embeddings.hdf5"
     outdir = PATHS.RESULT_DIR / "cv"
     outdir.mkdir(parents=True, exist_ok=True)
-    #run_eval(embedding_file, outdir=outdir)
+    run_eval(embedding_file, outdir=outdir)
     run_eval_on_comparison_embeddings(args.dataset)
 
 
