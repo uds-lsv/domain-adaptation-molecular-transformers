@@ -304,9 +304,27 @@ def add_eval_args(parser: argparse.ArgumentParser):
     return parser
 
 
+def add_eval_cv_args(parser: argparse.ArgumentParser):
+    parser.add_argument(
+        "--embedding-file",
+        type=pathlib.Path,
+        required=True,
+        help="Path to HDF5 file containing embeddings",
+    )
+    parser.add_argument(
+        "--output-dir",
+        required=True,
+        type=pathlib.Path,
+        help="Output directory where the resulting HDF5 file will be stored",
+    )
+    return parser
+
+
 def add_finetune_args(parser: argparse.ArgumentParser):
     from da4mt.finetune.embed import embed_cli_wrapper
-    from da4mt.finetune.eval import eval
+
+    # from da4mt.finetune.eval import eval
+    from da4mt.finetune.eval_cv import eval
 
     subparsers = parser.add_subparsers(title="step")
     embed_parser = subparsers.add_parser(
@@ -319,7 +337,7 @@ def add_finetune_args(parser: argparse.ArgumentParser):
         "eval",
         help="Evaluate the embeddings of this dataset. Requires running 'finetune embed' first",
     )
-    eval_parser = add_eval_args(eval_parser)
+    eval_parser = add_eval_cv_args(eval_parser)
     eval_parser.set_defaults(func=eval)
 
     return parser
