@@ -109,6 +109,8 @@ def embed_smiles(
 
 def save_embeddings_to_hdf5(
     embeddings: npt.NDArray,
+    smiles: npt.NDArray,
+    indices: npt.NDArray,
     model_path: pathlib.Path,
     output_dir: pathlib.Path,
     dataset_path: pathlib.Path,
@@ -120,6 +122,8 @@ def save_embeddings_to_hdf5(
     Save embeddings to an HDF5 file with metadata.
 
     :param embeddings: NumPy array of embeddings
+    :param smiles: SMILES in the same order as the embeddings
+    :param indices: Indices in the same order as the embeddings
     :param model_path: Path to the model used for embedding
     :param output_dir: Directory to save the HDF5 file
     :param dataset_name: Name of the dataset used for embeddings
@@ -133,6 +137,9 @@ def save_embeddings_to_hdf5(
     group_name = str(model_path.name)
 
     with h5py.File(hdf5_path, "a") as f:
+        f.attrs["smiles"] = smiles
+        f.attrs["indices"] = indices
+
         # Add file-level metadata if it doesn't exist
         if "dataset_path" not in f.attrs:
             logger.info("Initializing file-level metadata")
@@ -194,6 +201,8 @@ def embed(
 
         save_embeddings_to_hdf5(
             embeddings=embeddings,
+            smiles=dataset["smiles"].values,
+            indices=dataset.index.values,
             model_path=model_path,
             output_dir=output_dir,
             dataset_path=train_file,
