@@ -34,11 +34,7 @@ def run_eval(embedding_file, outdir):
 def run_eval_on_comparison_embeddings(dataset):
     root = pathlib.Path(__file__).parent.parent
     compare_dir = root / "comparison"
-    compare_results_dir = (
-        compare_dir
-        / "results"
-    
-    )
+    compare_results_dir = compare_dir / "results"
     compare_embeddings_dir = compare_dir / "embeddings"
 
     outdir = compare_results_dir / "cv"
@@ -98,7 +94,7 @@ def main():
             "pip",
             "install",
             "--ignore-requires-python",
-            "useful_rdkit_utils",
+            "useful_rdkit_utils==0.74.0",
         ]
     )
 
