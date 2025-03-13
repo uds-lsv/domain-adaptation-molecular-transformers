@@ -1,6 +1,10 @@
 import h5py
 import pandas as pd
-import useful_rdkit_utils as uru
+from useful_rdkit_utils.split_utils import (
+    cross_validate,
+    get_butina_clusters,
+    get_random_clusters,
+)
 from sklearn.ensemble import RandomForestRegressor
 
 from da4mt.finetune.eval import load_embeddings, get_logger
@@ -57,8 +61,8 @@ def eval(args):
     embeddings_for_model, metadata = load_embeddings(args.embedding_file)
 
     group_list = [
-        ("random", uru.get_random_clusters),
-        ("butina", uru.get_butina_clusters),
+        ("random", get_random_clusters),
+        ("butina", get_butina_clusters),
     ]
     model_list = [
         (name, PrecomputedEmbeddingWrapper(embeddings))
@@ -68,6 +72,6 @@ def eval(args):
     target_cols = [c for c in df.columns if c != "SMILES"]
     logger.info(f"Target columns: {target_cols}")
     for y_col in target_cols:
-        results_df = uru.cross_validate(df, model_list, y_col, group_list)
+        results_df = cross_validate(df, model_list, y_col, group_list)
 
         results_df.to_csv(f"{args.output_dir}/{ds_name}_{y_col}.csv", index=False)
