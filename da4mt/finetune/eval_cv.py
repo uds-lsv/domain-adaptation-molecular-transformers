@@ -9,7 +9,7 @@ from da4mt.finetune.eval import load_embeddings, get_logger
 class PrecomputedEmbeddingWrapper:
     def __init__(self, embeddings):
         self.embeddings = embeddings
-        self.model = RandomForestRegressor(random_state=42)
+        self.model = RandomForestRegressor(random_state=42, n_jobs=-1)
         self.y_col = None
 
     def fit(self, train):
@@ -43,11 +43,14 @@ def eval(args):
         # mess up the smiles <-> embedding mapping
         if ds_name.startswith("adme_microsom_stab"):
             ds_name += "_cleaned"
+            index_col = [0]  # We need the indices
+        else:
+            index_col = False  # Use default indices
 
         ds_source = args.data_dir / f"{ds_name}.csv"
         assert ds_source.exists()
 
-        df = pd.read_csv(ds_source)
+        df = pd.read_csv(ds_source, index_col=index_col)
         # Cross validate expects a SMILES column
         df = df.rename(columns={"smiles": "SMILES"})
 
