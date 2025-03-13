@@ -9,7 +9,7 @@ from da4mt.finetune.eval import load_embeddings, get_logger
 class PrecomputedEmbeddingWrapper:
     def __init__(self, embeddings):
         self.embeddings = embeddings
-        self.model = RandomForestRegressor(random_state=42)
+        self.model = RandomForestRegressor(random_state=42, n_jobs=-1)
         self.y_col = None
 
     def fit(self, train):
