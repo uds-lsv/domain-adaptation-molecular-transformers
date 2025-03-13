@@ -10,8 +10,7 @@ stream_output           = True
 transfer_output         = True
 request_CPUs = 12
 # request_GPUS = 1
-# cl11lx has issues with a missing library that useful_rdkit_utils tries to import
-requirements = (machine != "cl16lx.lsv.uni-saarland.de") && (machine != "cl17lx.lsv.uni-saarland.de") && (machine != "cl18lx.lsv.uni-saarland.de") && (machine != "cl11lx.lsv.uni-saarland.de")
+requirements = (machine != "cl16lx.lsv.uni-saarland.de") && (machine != "cl17lx.lsv.uni-saarland.de") && (machine != "cl18lx.lsv.uni-saarland.de")
 request_memory = 15G
 
 arguments = "$(dataset) $(task) $(targets)"
