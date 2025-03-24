@@ -1,10 +1,5 @@
 import h5py
 import pandas as pd
-from useful_rdkit_utils.split_utils import (
-    cross_validate,
-    get_butina_clusters,
-    get_random_clusters,
-)
 from sklearn.ensemble import RandomForestRegressor
 
 from da4mt.finetune.eval import load_embeddings, get_logger
@@ -35,6 +30,16 @@ class PrecomputedEmbeddingWrapper:
 
 
 def eval(args):
+    # Import locally to avoid import exception, since not currently installed in
+    # the docker image. Since __main__ imports from cli.py which imports eval from here
+    # global imports will be tried, hence resulting in an exception no matter if we are
+    # actually in the process of evaluation.
+    from useful_rdkit_utils.split_utils import (
+        cross_validate,
+        get_butina_clusters,
+        get_random_clusters,
+    )
+
     logger = get_logger()
     logger.info(f"Evaluating {args.embedding_file}")
 
