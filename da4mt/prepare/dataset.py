@@ -177,6 +177,14 @@ def make_data(args):
     logger.info(f"Loading {args.file} as CSV.")
     df = pd.read_csv(args.file)
 
+    if df.columns[0].startswith("Unnamed:"):
+        # Set that column as the index and convert index values to appropriate types
+        df = df.set_index(df.columns[0])
+        try:
+            df.index = pd.to_numeric(df.index)
+        except (ValueError, TypeError):
+            pass  # Keep as is if conversion fails
+
     if "smiles" not in df.columns:
         raise ValueError("CSV file must contain 'smiles' column.")
 
