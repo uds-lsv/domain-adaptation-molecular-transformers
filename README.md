@@ -130,9 +130,22 @@ python -m da4mt finetune embed <dataset_file> <adaptdir> <pretraindir> --outdir 
 **one** output file in `<outputdir>` titled `<name>_embeddings.hdf5`.
 The files contains one group for each model in the `adaptdir` and `pretraindir`, each group contains a dataset with the embeddings. The embeddings have the same order as the input `<dataset_file>`. The `embeddings` dataset also contains metadata about the embedding model, `device, domain_adaptation, embedding_dim, model_path, num_samples, pretraining` and `pretraining_size`, which is the percentage of the pretraining data set that was used to pretrain the model.
 
+#### Journal
+The results are obtained by nested 5x5 cross validation as implemented in the `useful_rdkit_utils` package.
+```
+python -m da4mt finetune eval --embedding-file <embedding_file> --data-dir <data_dir> --output-dir <output_dir>
+```
+The `embedding_file` should be a path to one of the files from the previous step. `data_dir` is the path to the directory containing the original dataset
+including the target column. The dataset is expected to be in CSV format with a ``smiles`` column. All other columns will be considered as targets.
+(An exception is the ADME microsom dataset, where the first column contains the indices that are needed to remove the censored datapoints.) After evaluation, a
+CSV file is created containing a column for each embedding model with the predictions on each group and fold on the respective test set.
+
+#### Preprint
+The results in the preprint version on [arxiv](https://arxiv.org/abs/2503.03360v2) were obtained by using simple cross validation:
+
 To execute the actual evaluation run
 ```bash
-python -m da4mt finetune eval --hdf5-file <embedding_file> --target <data_file> --model [linear random-forest svm] --task [classification regression] --output-dir <outputdir> --splits <splits_files>
+python -m da4mt.finetune.eval --hdf5-file <embedding_file> --target <data_file> --model [linear random-forest svm] --task [classification regression] --output-dir <outputdir> --splits <splits_files>
 ```
 
 The `embedding_file` should be one of the files output in the previous step, of course matching the corresponding downstream dataset provided by `--target <data_file>`. `--model` specifies the model that will be used during prediction, the correct instance will be used depeneding on the `--task` argument. `--splits` expects multiple files, one for each fold, in the same format as output during the data preprocessing step. The splits should only be from one splitter, i.e. don't mix `*.scaffold_splits.json` and `*.datasail_splits.json` etc.
