@@ -6,9 +6,9 @@ Adapt all pretrained models on the given dataset
 import argparse
 from typing import List
 
-from setup import PATHS, ADME_DATASETS, run_command
+from setup import PATHS, ADME_DATASETS, ASTRAZENECA_DATASETS, run_command
 
-METHODS = ["mtr", "mlm", "sbert", "cbert"]
+METHODS = ["mtr", "mlm", "cbert"]
 
 
 def get_mlm_command(model: str, dataset: str) -> List[str]:
@@ -69,9 +69,9 @@ def main():
 
     print(f"Running domain adaptation for {args.model_dir}")
 
-    for dataset in ADME_DATASETS:
+    datasets = ADME_DATASETS + ASTRAZENECA_DATASETS
+    for dataset in datasets:
         for method in METHODS:
-
             # We adapt the mtr pretrained model only with mtr
             if args.model_dir == "mtr-bert-30" and method != "mtr":
                 continue

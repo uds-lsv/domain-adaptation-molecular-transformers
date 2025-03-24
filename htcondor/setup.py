@@ -41,6 +41,13 @@ ADME_DATASETS = [
     "adme_solubility",
 ]
 
+ASTRAZENECA_DATASETS = [
+    "astrazeneca_CL",
+    "astrazeneca_LogD74",
+    "astrazeneca_PPB",
+    "astrazeneca_Solubility",
+]
+
 CHEMBENCH_DATASETS = [
     "bace",
     "bbbp",
@@ -53,7 +60,7 @@ CHEMBENCH_DATASETS = [
     "hiv",
 ]
 
-DATASETS = ADME_DATASETS + CHEMBENCH_DATASETS
+DATASETS = ADME_DATASETS + CHEMBENCH_DATASETS + ASTRAZENECA_DATASETS
 
 
 def rename_gpus() -> None:
