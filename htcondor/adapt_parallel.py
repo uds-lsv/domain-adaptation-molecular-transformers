@@ -73,7 +73,7 @@ def main():
     for dataset in datasets:
         for method in METHODS:
             # We adapt the mtr pretrained model only with mtr
-            if args.model_dir == "mtr-bert-30" and method != "mtr":
+            if args.model_dir.startswith("mtr") and method != "mtr":
                 continue
 
             model = PATHS.PRETRAIN_DIR / args.model_dir
