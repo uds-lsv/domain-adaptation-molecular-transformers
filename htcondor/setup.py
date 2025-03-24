@@ -93,6 +93,10 @@ def setup_environment(kwargs) -> None:
     for key, value in kwargs.items():
         os.environ[key] = value
 
+    # Some issues with initializing wandb on the cluster
+    os.environ["WANDB_INIT_TIMEOUT"] = "600"
+    os.environ["WAND_START_METHOD"] = "fork"
+
 
 def load_wandb_credentials() -> None:
     """
