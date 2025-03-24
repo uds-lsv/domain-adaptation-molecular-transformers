@@ -146,11 +146,23 @@ def create_triplets(smiles: List[str], seed: int = None) -> List[Tuple[str, str,
             False  # Make sure this molecule can't be its own negative
         )
         positive = randomize_smiles(smi, rng=rng)  # Enumeration as positive sample
-        negative_idx = rng.choice(
-            indices[possible_negative]
-        )  # SMILES of random other molecule as negative sample
-        negative = smiles[negative_idx]
-        assert smi != negative, "Molecule is the same"
+
+        repeats = 0
+        while True:
+            negative_idx = rng.choice(
+                indices[possible_negative]
+            )  # SMILES of random other molecule as negative sample
+            negative = smiles[negative_idx]
+            assert idx != negative_idx
+
+            if smi == negative:
+                warnings.warn(
+                    f"Sampled the same molecule (retries={repeats}). "
+                    f"The dataset contains {len(smiles) - len(set(smiles))} duplicates."
+                )
+                repeats += 1
+            else:
+                break
 
         triplets.append((smi, positive, negative))
 
