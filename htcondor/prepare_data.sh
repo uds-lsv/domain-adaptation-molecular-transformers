@@ -32,7 +32,7 @@ python -m da4mt prepare splits $ADME_DIR/adme_ppb_h.csv -o $DATA_DIR --splitter 
 python -m da4mt prepare splits $ADME_DIR/adme_ppb_r.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
 python -m da4mt prepare splits $ADME_DIR/adme_solubility.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
 
-python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_CL.csv --splitter random datasail scaffold --num-splits 5 5 5
-python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_LogD74.csv --splitter random datasail scaffold --num-splits 5 5 5
-python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_PPB.csv --splitter random datasail scaffold --num-splits 5 5 5
-python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_Solubility.csv --splitter random datasail scaffold --num-splits 5 5 5
+python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_CL.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
+python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_LogD74.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
+python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_PPB.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
+python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_Solubility.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
