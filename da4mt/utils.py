@@ -59,7 +59,9 @@ def get_adapt_training_args(model_dir: str):
         output_dir=model_dir,
         overwrite_output_dir=True,
         bf16=True,
-        report_to=["wandb"],
+        # Automatically checks all integreations, will use wandb
+        # if available and not disabled by env var
+        # report_to=["wandb"],
         # Optimizer
         learning_rate=3e-5,
         lr_scheduler_type="linear",
