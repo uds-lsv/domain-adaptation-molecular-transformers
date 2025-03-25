@@ -18,4 +18,6 @@ queue arguments from (
     "mlm-bert-100"
     "none-bert-0"
     "mtr-bert-30"
+    "mtr-bert-60"
+    "mtr-bert-100"
 )
