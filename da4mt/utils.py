@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import pathlib
+import sys
 import warnings
 from typing import Dict, Iterable, List, Tuple, Literal
 
@@ -78,6 +79,18 @@ class WandbLoggingLoss(nn.Module):
         super().__init__()
         self.loss_fn = loss_fn
         self.global_step = 0
+
+        self.disabled = os.getenv("WANDB_DISABLED", False)
+
+        _logger = logging.getLogger(__name__)
+        _logger.setLevel(logging.INFO)
+        _logger.addHandler(logging.StreamHandler(sys.stdout))
+        _logger.info(f"{self.disabled=}")
+
+        if not self.disabled:
+            self._setup(group)
+
+    def _setup(self, group):
         import wandb
 
         self._wandb = wandb
@@ -95,12 +108,16 @@ class WandbLoggingLoss(nn.Module):
         self._wandb.define_metric("*", step_metric="train/global_step", step_sync=True)
 
     def log_eval(self, score, epoch, steps):
-        self._wandb.log({"eval/score": score, "eval/epoch": epoch, "eval/steps": steps})
+        if not self.disabled:
+            self._wandb.log(
+                {"eval/score": score, "eval/epoch": epoch, "eval/steps": steps}
+            )
 
     def __call__(self, sentence_features: Iterable[Dict[str, Tensor]], labels: Tensor):
         loss = self.loss_fn(sentence_features, labels)
         self.global_step += 1
-        self._wandb.log({"train/loss": loss, "train/global_step": self.global_step})
+        if not self.disabled:
+            self._wandb.log({"train/loss": loss, "train/global_step": self.global_step})
         return loss
 
 
