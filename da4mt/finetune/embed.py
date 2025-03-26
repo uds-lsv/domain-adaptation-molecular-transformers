@@ -136,7 +136,7 @@ def save_embeddings_to_hdf5(
     model_metadata = parse_model_name(model_path)
     group_name = str(model_path.name)
 
-    with h5py.File(hdf5_path, "a") as f:
+    with h5py.File(hdf5_path, "a", track_order=True) as f:
         f.attrs["smiles"] = smiles
         f.attrs["indices"] = indices
 
