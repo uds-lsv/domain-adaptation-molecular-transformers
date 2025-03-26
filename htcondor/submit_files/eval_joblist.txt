@@ -4,3 +4,7 @@ adme_permeability, regression
 adme_ppb_h, regression
 adme_ppb_r, regression
 adme_solubility, regression
+astrazeneca_PPB, regression
+astrazeneca_LogD74, regression
+astrazeneca_Solubility, regression
+astrazeneca_CL, regression
