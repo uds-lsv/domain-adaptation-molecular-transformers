@@ -52,7 +52,7 @@ RUN apt-get update > /dev/null && \
         > /dev/null && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    wget --no-hsts --quiet https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh -O /tmp/miniforge.sh && \
+    wget --no-hsts --quiet https://github.com/conda-forge/miniforge/releases/download/24.3.0-0/Miniforge3-$(uname)-$(uname -m).sh -O /tmp/miniforge.sh && \
     /bin/bash /tmp/miniforge.sh -b -p ${CONDA_DIR} && \
     rm /tmp/miniforge.sh && \
     ${CONDA_DIR}/bin/conda clean --tarballs --index-cache --packages --yes && \
