@@ -18,7 +18,7 @@ from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator
 
 
-DATASETS = [
+ADME_DATASETS = [
     ("adme_microsom_stab_h", "regression", ("microsom_stab_h",)),
     ("adme_microsom_stab_r", "regression", ("microsom_stab_r",)),
     ("adme_permeability", "regression", ("permeability",)),
@@ -26,6 +26,13 @@ DATASETS = [
     ("adme_ppb_r", "regression", ("ppb_r",)),
     ("adme_solubility", "regression", ("solubility",)),
 ]
+ASTRAZENECA_DATASETS = [
+    ("astrazeneca_LogD74", "regression", ("Standard Value")),
+    ("astrazeneca_PPB", "regression", ("Standard Value")),
+    ("astrazeneca_Solubility", "regression", ("Standard Value")),
+    ("astrazeneca_CL", "regression", ("Standard Value")),
+]
+DATASETS = ADME_DATASETS + ASTRAZENECA_DATASETS
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.DEBUG)
