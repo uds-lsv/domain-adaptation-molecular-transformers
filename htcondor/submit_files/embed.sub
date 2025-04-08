@@ -9,13 +9,19 @@ log                     = /data/users/mrdupont/emtrl/logs/embed.$(ClusterId).$(P
 stream_output           = True
 transfer_output         = True
 request_CPUs = 8
-requirements = ((machine == "cl16lx.lsv.uni-saarland.de") || (machine == "cl17lx.lsv.uni-saarland.de") || (machine == "cl18lx.lsv.uni-saarland.de"))
+requirements = ((machine == "cl16lx.lsv.uni-saarland.de") || (machine == "cl18lx.lsv.uni-saarland.de"))
 request_memory = 35G
 queue arguments from (
-    "adme_microsom_stab_h"
-    "adme_microsom_stab_r"
-    "adme_permeability"
-    "adme_ppb_h"
-    "adme_ppb_r"
-    "adme_solubility"
+     "adme_microsom_stab_h"
+     "adme_microsom_stab_r"
+     "adme_permeability"
+     "adme_ppb_h"
+     "adme_ppb_r"
+     "adme_solubility"
+     "astrazeneca_PPB"
+     "astrazeneca_Solubility"
+     "astrazeneca_LogD74"
+     "astrazeneca_CL"
+     "astrazeneca_log_HCL"
+     "astrazeneca_log_HPPB"
 )
