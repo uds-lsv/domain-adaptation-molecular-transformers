@@ -80,10 +80,22 @@ def create_pairs(
             partner = randomize_smiles(smi, rng=rng)
             is_enumeration = True
         else:
-            partner_idx = rng.choice(indices[possible_partners])
-            partner = smiles[partner_idx]
-            is_enumeration = False
-            assert smi != partner, "Molecule is the same"
+
+            repeats = 0
+            while True:
+                partner_idx = rng.choice(indices[possible_partners])
+                partner = smiles[partner_idx]
+                is_enumeration = False
+                assert idx != partner_idx, "Molecule is the same"
+
+                if smi == partner:
+                    warnings.warn(
+                        f"Sampled the same molecule (retries={repeats}). "
+                        f"The dataset contains {len(smiles) - len(set(smiles))} duplicates."
+                    )
+                    repeats += 1
+                else:
+                    break
 
         pairs.append((smi, partner, is_enumeration))
 
