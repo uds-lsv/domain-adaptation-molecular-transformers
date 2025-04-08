@@ -1,7 +1,7 @@
 universe                = docker
 docker_image            = docker.lsv.uni-saarland.de/mrdupont/eamt:v1
 executable              = /nethome/mrdupont/enumeration-aware-molecule-transformers/htcondor/adapt_parallel.py
-environment             = "PROJECT_ROOT=/nethome/mrdupont/enumeration-aware-molecule-transformers WANDB_PROJECT=da4mt_$(YEAR)_$(MONTH)_$(DAY)"
+environment             = "PROJECT_ROOT=/nethome/mrdupont/enumeration-aware-molecule-transformers WANDB_PROJECT=da4mt_$(YEAR)_$(MONTH)_$(DAY) WANDB_DISABLED='true'"
 initialdir              = /nethome/mrdupont/
 output                  = /data/users/mrdupont/emtrl/logs/adapt_parallel.$(ClusterId).$(ProcId).out
 error                   = /data/users/mrdupont/emtrl/logs/adapt_parallel.$(ClusterId).$(ProcId).err
