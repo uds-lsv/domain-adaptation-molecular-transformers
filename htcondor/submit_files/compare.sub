@@ -10,6 +10,6 @@ stream_output           = True
 transfer_output         = True
 request_CPUs = 25
 request_GPUS = 1
-requirements = (GPUs_GlobalMemoryMb >= 12000) && (machine == "cl17lx.lsv.uni-saarland.de" || machine == "cl18lx.lsv.uni-saarland.de")
+requirements = (GPUs_GlobalMemoryMb >= 12000) && (machine == "cl16lx.lsv.uni-saarland.de" || machine == "cl18lx.lsv.uni-saarland.de")
 request_memory = 35G
 queue 1
