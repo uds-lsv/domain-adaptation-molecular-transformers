@@ -46,6 +46,8 @@ ASTRAZENECA_DATASETS = [
     "astrazeneca_LogD74",
     "astrazeneca_PPB",
     "astrazeneca_Solubility",
+    "astrazeneca_log_HCL,
+    "astrazeneca_log_HPPB"
 ]
 
 CHEMBENCH_DATASETS = [
