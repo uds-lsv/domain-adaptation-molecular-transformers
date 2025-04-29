@@ -1,4 +1,4 @@
-# Enumeration-aware Molecular Transformers for Representation Learning
+# Transformers for Molecular Property Prediction: Domain Adaptation Efficiently Improves Performance
 
 
 ## Setup
@@ -160,3 +160,4 @@ The output file will follow the same structure as the embeddings file -  for eac
 
 All figures and analysis used in the manuscript can be found and re-done by following the README file in the
 [analysis_noteboks](analysis_noteboks) folder.
+
