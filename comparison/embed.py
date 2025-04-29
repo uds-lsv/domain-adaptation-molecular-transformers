@@ -30,9 +30,9 @@ ASTRAZENECA_DATASETS = [
     ("astrazeneca_LogD74", "regression", ("Standard Value", )),
     ("astrazeneca_PPB", "regression", ("Standard Value", )),
     ("astrazeneca_Solubility", "regression", ("Standard Value", )),
-    ("astrazeneca_CL", "regression", ("Standard Value", )),
+    ("astrazeneca_log_HPPB", "regression", ("HPPB", )),
 ]
-DATASETS = ASTRAZENECA_DATASETS + ADME_DATASETS
+DATASETS = ASTRAZENECA_DATASETS # + ADME_DATASETS
 
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.DEBUG)

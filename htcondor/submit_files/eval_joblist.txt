@@ -7,6 +7,4 @@ adme_solubility, regression
 astrazeneca_PPB, regression
 astrazeneca_LogD74, regression
 astrazeneca_Solubility, regression
-astrazeneca_CL, regression
-astrazeneca_log_HCL, regression
 astrazeneca_log_HPPB, regression

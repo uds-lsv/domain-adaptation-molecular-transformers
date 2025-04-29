@@ -19,12 +19,10 @@ python -m da4mt prepare dataset $ADME_DIR/adme_ppb_h.csv -o $DATA_DIR
 python -m da4mt prepare dataset $ADME_DIR/adme_ppb_r.csv -o $DATA_DIR
 python -m da4mt prepare dataset $ADME_DIR/adme_solubility.csv -o $DATA_DIR
 # Astrazeneca
-python -m da4mt prepare dataset $ASTRA_DIR/astrazeneca_CL.csv -o $DATA_DIR
 python -m da4mt prepare dataset $ASTRA_DIR/astrazeneca_LogD74.csv -o $DATA_DIR
 python -m da4mt prepare dataset $ASTRA_DIR/astrazeneca_PPB.csv -o $DATA_DIR
 python -m da4mt prepare dataset $ASTRA_DIR/astrazeneca_Solubility.csv -o $DATA_DIR
 python -m da4mt prepare dataset $ASTRA_DIR/astrazeneca_log_HPPB.csv -o $DATA_DIR
-python -m da4mt prepare dataset $ASTRA_DIR/astrazeneca_log_HCL.csv -o $DATA_DIR
 
 # Splitting
 python -m da4mt prepare splits $ADME_DIR/adme_microsom_stab_h.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
@@ -34,9 +32,7 @@ python -m da4mt prepare splits $ADME_DIR/adme_ppb_h.csv -o $DATA_DIR --splitter 
 python -m da4mt prepare splits $ADME_DIR/adme_ppb_r.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
 python -m da4mt prepare splits $ADME_DIR/adme_solubility.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
 
-python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_CL.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
 python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_LogD74.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
 python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_PPB.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
 python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_Solubility.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
-python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_log_HPPB.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
-python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_log_HCL.csv -o $DATA_DIR --splitter random datasail scaffold --num-splits 5 5 5
+python -m da4mt prepare splits $ASTRA_DIR/astrazeneca_log_HPPB.csv -o $DATA_DIR --splitter random scaffold datasail --num-splits 5 5 5

@@ -21,7 +21,5 @@ queue arguments from (
      "astrazeneca_PPB"
      "astrazeneca_Solubility"
      "astrazeneca_LogD74"
-     "astrazeneca_CL"
-     "astrazeneca_log_HCL"
      "astrazeneca_log_HPPB"
 )
