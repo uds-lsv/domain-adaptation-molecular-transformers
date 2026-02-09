@@ -159,5 +159,4 @@ The output file will follow the same structure as the embeddings file -  for eac
 ## Manuscript analysis
 
 All figures and analysis used in the manuscript can be found and re-done by following the README file in the
-[analysis_noteboks](analysis_noteboks) folder.
-
+[analysis_noteboks](analysis_notebooks) folder.
