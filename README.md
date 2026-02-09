@@ -1,5 +1,48 @@
 # Transformers for Molecular Property Prediction: Domain Adaptation Efficiently Improves Performance
 
+[![arXiv](https://img.shields.io/badge/arXiv-2503.03360-b31b1b.svg)](https://doi.org/10.48550/arXiv.2503.03360)
+
+This repository provides the code for training and evaluating domain-adapted molecular transformers for property prediction tasks in drug discovery.
+
+## Key Findings
+
+- **Pre-training scale has diminishing returns**: Increasing pre-training data beyond ~400K–800K molecules does not improve performance on ADME prediction tasks
+- **Domain adaptation is highly effective**: Adapting on just ≤4K domain-relevant molecules using multi-task regression of physicochemical properties significantly improves performance (P < 0.001)
+- **Smaller adapted models outperform large-scale alternatives**: A model pre-trained on ~400K molecules with domain adaptation outperforms MolFormer and matches MolBERT
+- **Chemically informed features matter**: Incorporating physicochemical properties improves performance for both traditional (Random Forest) and transformer-based models
+
+## Pre-trained Models
+
+Our models are available on HuggingFace for easy use and adaptation:
+
+🤗 [Domain Adaptation Molecular Transformers Collection](https://huggingface.co/collections/UdS-LSV/domain-adaptation-molecular-transformers-6821e7189ada6b7d0a5b62d4)
+
+## Project Structure
+
+```
+├── da4mt/                  # Main Python package (Domain Adaptation for Molecular Transformers)
+│   ├── prepare/            # Data preparation and preprocessing
+│   ├── pretrain/           # CLI for pretraining (calls training/)
+│   ├── adapt/              # CLI for domain adaptation (calls training/)
+│   ├── finetune/           # Embedding extraction and evaluation
+│   ├── models/             # Model architectures (BERT for regression)
+│   └── training/           # Training objective implementations (MLM, MTR, contrastive, tokenizer)
+├── analysis_notebooks/     # Jupyter notebooks for manuscript figures and analysis
+├── chembench_data/         # Benchmark datasets (BACE, BBBP, Tox21, etc.)
+├── htcondor/               # HPC cluster job scripts and submission files
+├── external/               # Third-party code (BitBirch clustering)
+├── scripts/                # Utility scripts
+├── postprocess_adme/       # ADME dataset postprocessing (censored data removal in the microsom dataset)
+└── preprocess_astrazeneca/ # AstraZeneca dataset preprocessing (averaging duplicates)
+```
+
+For detailed package structure, see [STRUCTURE.md](STRUCTURE.md).
+
+## Manuscript analysis
+
+All figures and analysis used in the manuscript can be found and re-done by following the README file in the
+[analysis_notebooks](analysis_notebooks) folder.
+
 
 ## Setup
 All experiments have been executed with python `3.10.14`, using the provided Docker image.
@@ -11,7 +54,7 @@ pip install -r requirements.txt
 
 We also need the `useful_rdkit_utils` package, which requires `python>=3.11` but still works fine with
 our python version.
-```
+```bash
 pip install --ignore-requires-python useful_rdkit_utils==0.74
 ```
 
@@ -21,6 +64,8 @@ mamba install -c kalininalab -c conda-forge -c bioconda datasail
 ```
 Because the newer Nvidia Docker images no longer include mamba/conda, datasail is not installed under the default `PYTHONPATH`, but rather `/opt/conda/lib/python3.10/site-packages`. See
 `htcondor/prepare_data.sh` for more details.
+
+> **Note:** Since development, DataSAIL has become available on PyPI (`pip install datasail`), which may eliminate the need for conda/mamba. However, we have not tested this installation method.
 
 ### Overview
 In general all steps in the pipeline are accessible as subcommands to the command line interface of the `da4mt` package.
@@ -44,7 +89,7 @@ Command:
 
 #### Pretraining Data
 For pretraining we use the training split of the [Guacamol](https://pubs.acs.org/doi/10.1021/acs.jcim.8b00839) dataset. To download the dataset and create subsets of the training data (e.g. 30%, 60%) run
-```
+```bash
 python -m da4mt prepare pretraining -o <outputdir>
 ```
 This will create the following files in `<outputdir>`.
@@ -53,17 +98,17 @@ This will create the following files in `<outputdir>`.
 guacamol_train_clusters.json
 guacamol_train_clusters_30.json         <-- Indices of 30% of pretraining data
 guacamol_train_clusters_60.json
-guacamol_v1_normalization_values.json   <-- Mean and std for each physiochemcial property
+guacamol_v1_normalization_values.json   <-- Mean and std for each physicochemical property
 guacamol_v1_test.smiles                 <-- SMILES for MLM task, one mol per line
 guacamol_v1_train.smiles
-guacamol_v1_train_mtr.jsonl             <-- Physiochemcial properties for MTR
+guacamol_v1_train_mtr.jsonl             <-- Physicochemical properties for MTR
 guacamol_v1_valid.smiles
 guacamol_v1_valid_mtr.jsonl
 ```
 
 #### Downstream datasets
 In general the dataset preprocessing encompasses 2 steps:
-1. Precomputing the necessary labels for pretraining and domain adaptation, i.e. Physiochemical properties and triples for contrastive learning
+1. Precomputing the necessary labels for pretraining and domain adaptation, i.e. physicochemical properties and triples for contrastive learning
 2. Splitting the datasets into `k` folds. `k` needs to be determined by hand
 
 The first step can be done by running
@@ -75,7 +120,7 @@ The csvfile should contain a `smiles` column, all other columns will interpreted
 This produces the following files in `<outputdir>`, where name is the basename of the `<csvfile>`, e.g. if `csvfile=/some/path/to/file.csv`, then `name=file`.
 ```
 <name>.csv         <-- Copy of the full dataset
-<name>_mtr.jsonl   <-- Physiochemcial properties for MTR
+<name>_mtr.jsonl   <-- Physicochemical properties for MTR
 <name>_normalization_values.json  <-- Mean and std for each MTR label
 <name>_cbert.csv   <-- Contrastive learning triples (orig, enumerated, negative)
 <name>_sbert.csv   <-- (Not used in the publication, since always worse performance)
@@ -95,7 +140,7 @@ As noted in the publication, the ADME microsom datasets contain censored datapoi
 
 ### Pretraining
 Make sure to first train the tokenizer
-```
+```bash
 python -m da4mt pretrain <datadir> <outputdir> --train-tokenizer
 ```
 
@@ -132,7 +177,7 @@ The files contains one group for each model in the `adaptdir` and `pretraindir`,
 
 #### Journal
 The results are obtained by nested 5x5 cross validation as implemented in the `useful_rdkit_utils` package.
-```
+```bash
 python -m da4mt finetune eval --embedding-file <embedding_file> --data-dir <data_dir> --output-dir <output_dir>
 ```
 The `embedding_file` should be a path to one of the files from the previous step. `data_dir` is the path to the directory containing the original dataset
@@ -155,8 +200,3 @@ The evaluation will first copy the `embedding_file` to the `outputdir`. If the f
 By default the validation set `val` in the `splits_file` will be added to the training set of the downstream model, since no hyperparameter optimization is performed and the `validation` set is never actually used. If this is not desired add the `--keep-val-separate` flag. This will not use the validation set in any step.
 
 The output file will follow the same structure as the embeddings file -  for each group (=model) in the file, predictions with the downstream models are made. For each downstream model, a new group will be added in the group of the embedding model. That is, for e.g. the linear model with `mlm-bert-30` as the embedding model, the predictions will be under `mlm-bert-30/predictions/linear`. This group then contains `k` groups, one for each fold of the dataset. The name of the group is the same as the splits file. In this group there will be 4 datasets, `train, test, train_smiles, test_smiles`. `train, test` contain the actual predictions of the downstream model, `train_smiles, test_smiles` are the smiles strings of the inputs in the same order. The group of the fold contains additionally the `MAE, MSE` and `R2` scores for the train and test set as attributes.
-
-## Manuscript analysis
-
-All figures and analysis used in the manuscript can be found and re-done by following the README file in the
-[analysis_noteboks](analysis_notebooks) folder.
