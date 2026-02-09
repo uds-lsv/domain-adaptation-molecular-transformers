@@ -17,6 +17,8 @@ Our models are available on HuggingFace for easy use and adaptation:
 
 🤗 [Domain Adaptation Molecular Transformers Collection](https://huggingface.co/collections/UdS-LSV/domain-adaptation-molecular-transformers-6821e7189ada6b7d0a5b62d4)
 
+We also provide a minimal example demonstrating how to finetune our pre-trained models on your own data in the [mtr-example](mtr-example) directory.
+
 ## Project Structure
 
 ```
