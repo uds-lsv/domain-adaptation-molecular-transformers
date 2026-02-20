@@ -135,3 +135,5 @@ chembench_data/*
 comparison/molbert.*
 comparison/hparams.yaml
 logs_grep.out
+results/
+comparison/
