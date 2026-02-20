@@ -4,12 +4,20 @@
 
 This repository provides the code for training and evaluating domain-adapted molecular transformers for property prediction tasks in drug discovery.
 
+## Abstract 
+Over the past six years, molecular transformer models have become an integral part of the computational toolbox for drug discovery. Most existing models are pre-trained on millions to billions of molecules from large-scale unlabeled datasets such as ZINC or ChEMBL. However, the extent to which such large-scale pre-training improves molecular property prediction remains unclear.
+
+This study investigates the potential of transformer models for molecular property prediction while addressing their current limitations. We explore strategies to enhance performance, including the influence of pre-training dataset size and the benefits of domain adaptation through chemically informed objectives.
+
+![Graphical Abstract](graphical%20abstract.png)
+
+
 ## Key Findings
 
 - **Pre-training scale has diminishing returns**: Increasing pre-training data beyond ~400K–800K molecules does not improve performance on ADME prediction tasks
-- **Domain adaptation is highly effective**: Adapting on just ≤4K domain-relevant molecules using multi-task regression of physicochemical properties significantly improves performance (P < 0.001)
+- **Domain adaptation is highly effective**: Adapting on just ≤4K domain-relevant molecules using multi-task regression of RDKit descriptors significantly improves performance (P < 0.001)
 - **Smaller adapted models outperform large-scale alternatives**: A model pre-trained on ~400K molecules with domain adaptation outperforms MolFormer and matches MolBERT
-- **Chemically informed features matter**: Incorporating physicochemical properties improves performance for both traditional (Random Forest) and transformer-based models
+- **Chemically informed features matter**: Incorporating physicochemical and 2D properties improves performance for both traditional (Random Forest) and transformer-based models
 
 ## Pre-trained Models
 
@@ -17,7 +25,7 @@ Our models are available on HuggingFace for easy use and adaptation:
 
 🤗 [Domain Adaptation Molecular Transformers Collection](https://huggingface.co/collections/UdS-LSV/domain-adaptation-molecular-transformers-6821e7189ada6b7d0a5b62d4)
 
-We also provide a minimal example demonstrating how to finetune our pre-trained models on your own data in the [mtr-example](mtr-example) directory.
+We also provide a minimal example demonstrating how to fine-tune our pre-trained models on your own data in the [mtr-example](mtr-example) directory.
 
 ## Project Structure
 
@@ -30,7 +38,7 @@ We also provide a minimal example demonstrating how to finetune our pre-trained 
 │   ├── models/             # Model architectures (BERT for regression)
 │   └── training/           # Training objective implementations (MLM, MTR, contrastive, tokenizer)
 ├── analysis_notebooks/     # Jupyter notebooks for manuscript figures and analysis
-├── chembench_data/         # Benchmark datasets (BACE, BBBP, Tox21, etc.)
+├── mtr-example/            # A notebook guide to implement MTR domina-adaptation for your dataset
 ├── htcondor/               # HPC cluster job scripts and submission files
 ├── external/               # Third-party code (BitBirch clustering)
 ├── scripts/                # Utility scripts
@@ -100,17 +108,17 @@ This will create the following files in `<outputdir>`.
 guacamol_train_clusters.json
 guacamol_train_clusters_30.json         <-- Indices of 30% of pretraining data
 guacamol_train_clusters_60.json
-guacamol_v1_normalization_values.json   <-- Mean and std for each physicochemical property
+guacamol_v1_normalization_values.json   <-- Mean and std for each RDKit descriptor
 guacamol_v1_test.smiles                 <-- SMILES for MLM task, one mol per line
 guacamol_v1_train.smiles
-guacamol_v1_train_mtr.jsonl             <-- Physicochemical properties for MTR
+guacamol_v1_train_mtr.jsonl             <-- RDKit descriptors for MTR
 guacamol_v1_valid.smiles
 guacamol_v1_valid_mtr.jsonl
 ```
 
 #### Downstream datasets
 In general the dataset preprocessing encompasses 2 steps:
-1. Precomputing the necessary labels for pretraining and domain adaptation, i.e. physicochemical properties and triples for contrastive learning
+1. Precomputing the necessary labels for pretraining and domain adaptation, i.e. RDKit descriptors and triples for contrastive learning
 2. Splitting the datasets into `k` folds. `k` needs to be determined by hand
 
 The first step can be done by running
@@ -122,7 +130,7 @@ The csvfile should contain a `smiles` column, all other columns will interpreted
 This produces the following files in `<outputdir>`, where name is the basename of the `<csvfile>`, e.g. if `csvfile=/some/path/to/file.csv`, then `name=file`.
 ```
 <name>.csv         <-- Copy of the full dataset
-<name>_mtr.jsonl   <-- Physicochemical properties for MTR
+<name>_mtr.jsonl   <-- RDKit descriptors for MTR
 <name>_normalization_values.json  <-- Mean and std for each MTR label
 <name>_cbert.csv   <-- Contrastive learning triples (orig, enumerated, negative)
 <name>_sbert.csv   <-- (Not used in the publication, since always worse performance)
@@ -178,7 +186,7 @@ python -m da4mt finetune embed <dataset_file> <adaptdir> <pretraindir> --outdir 
 The files contains one group for each model in the `adaptdir` and `pretraindir`, each group contains a dataset with the embeddings. The embeddings have the same order as the input `<dataset_file>`. The `embeddings` dataset also contains metadata about the embedding model, `device, domain_adaptation, embedding_dim, model_path, num_samples, pretraining` and `pretraining_size`, which is the percentage of the pretraining data set that was used to pretrain the model.
 
 #### Journal
-The results are obtained by nested 5x5 cross validation as implemented in the `useful_rdkit_utils` package.
+The results are obtained by Repeated 5x5 cross-validation as implemented in the `useful_rdkit_utils` package.
 ```bash
 python -m da4mt finetune eval --embedding-file <embedding_file> --data-dir <data_dir> --output-dir <output_dir>
 ```
