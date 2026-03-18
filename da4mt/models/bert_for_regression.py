@@ -12,6 +12,12 @@ from transformers.models.bert.modeling_bert import BertPreTrainedModel, BertConf
 
 
 class BertForRegressionConfig(BertConfig):
+    """Configuration class for :class:`BertForRegression`.
+
+    Extends :class:`~transformers.BertConfig` with normalization parameters
+    and a property subset selection.
+    """
+
     def __init__(
         self,
         norm_mean=None,
@@ -39,6 +45,12 @@ class BertForRegressionConfig(BertConfig):
 
 
 class BertForRegression(BertPreTrainedModel):
+    """BERT model with a multi-task regression head.
+
+    Predicts multiple continuous physico-chemical properties from SMILES token
+    sequences. Label normalization and de-normalization are applied inside the model.
+    """
+
     _keys_to_ignore_on_load_missing = ["position_ids"]
 
     def __init__(self, config):
@@ -76,6 +88,18 @@ class BertForRegression(BertPreTrainedModel):
         output_hidden_states=None,
         return_dict=None,
     ):
+        """Run the forward pass.
+
+        When *labels* are provided the MSE loss is computed on normalized targets
+        and returned as part of a :class:`RegressionOutput`. Without labels the
+        de-normalized predictions are returned directly.
+
+        :param torch.Tensor input_ids: Token ids of shape (batch, seq_len).
+        :param torch.Tensor attention_mask: Attention mask of shape (batch, seq_len).
+        :param torch.Tensor labels: Target property values of shape (batch, num_labels).
+        :return: Model outputs including optional loss and logits.
+        :rtype: RegressionOutput or tuple
+        """
         return_dict = (
             return_dict if return_dict is not None else self.config.use_return_dict
         )
@@ -117,9 +141,21 @@ class BertForRegression(BertPreTrainedModel):
         )
 
     def normalize_logits(self, tensor):
+        """Normalize target values using the stored mean and std.
+
+        :param torch.Tensor tensor: Raw target values.
+        :return: Normalized values.
+        :rtype: torch.Tensor
+        """
         return (tensor - self.norm_mean) / self.norm_std
 
     def unnormalize_logits(self, tensor):
+        """De-normalize model outputs back to the original scale.
+
+        :param torch.Tensor tensor: Normalized model predictions.
+        :return: De-normalized predictions.
+        :rtype: torch.Tensor
+        """
         return (tensor * self.norm_std) + self.norm_mean
 
 
@@ -138,6 +174,12 @@ class BertRegressionHead(nn.Module):
         self.out_proj = nn.Linear(config.hidden_size, config.num_labels)
 
     def forward(self, features, **kwargs):
+        """Compute regression logits from the CLS token representation.
+
+        :param torch.Tensor features: Hidden states of shape (batch, seq_len, hidden_size).
+        :return: Regression logits of shape (batch, num_labels).
+        :rtype: torch.Tensor
+        """
         x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
         x = self.dropout(x)
         x = self.dense(x)

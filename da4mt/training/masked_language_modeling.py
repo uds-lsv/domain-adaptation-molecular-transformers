@@ -18,6 +18,12 @@ from transformers import (
 
 
 class tokenizer_function:
+    """Callable that tokenizes raw text examples for MLM pre-training.
+
+    Wraps a :class:`~transformers.BertTokenizerFast` to be used as a
+    batched ``datasets.Dataset.map`` function.
+    """
+
     def __init__(self, tokenizer):
         """Store the tokenizer to use for tokenization.
 
@@ -26,6 +32,14 @@ class tokenizer_function:
         self.tokenizer = tokenizer
 
     def __call__(self, examples, block_size=128, text_column_name="text"):
+        """Tokenize a batch of text examples.
+
+        :param dict examples: Batch from a HuggingFace dataset with a text column.
+        :param int block_size: Maximum token sequence length, defaults to 128.
+        :param str text_column_name: Name of the text column, defaults to 'text'.
+        :return: Tokenized batch including special-token masks.
+        :rtype: dict
+        """
         # Remove empty lines
         examples[text_column_name] = [
             line

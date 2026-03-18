@@ -13,6 +13,17 @@ from sklearn.ensemble import RandomForestRegressor
 
 
 class ModelMetadata(NamedTuple):
+    """Metadata stored alongside each embedding dataset in the HDF5 file.
+
+    :param device: Device used during inference.
+    :param embedding_dim: Dimensionality of the embedding vectors.
+    :param model_path: Path to the model that produced the embeddings.
+    :param num_samples: Number of embedded molecules.
+    :param domain_adaptation: Domain adaptation method, if any.
+    :param pretraining: Pre-training method, if any.
+    :param pretraining_size: Percentage of the pre-training corpus used.
+    """
+
     device: Literal["cpu", "cuda"]
     embedding_dim: int
     model_path: pathlib.Path
@@ -57,6 +68,12 @@ def load_embeddings(
 
 
 class PrecomputedEmbeddingWrapper:
+    """Wraps pre-computed embeddings and a RandomForest regressor for cross-validation.
+
+    Implements the fit/predict/validate interface expected by
+    ``useful_rdkit_utils.split_utils.cross_validate``.
+    """
+
     def __init__(self, embeddings):
         """Initialize the wrapper with a pre-computed embedding matrix.
 
@@ -67,19 +84,42 @@ class PrecomputedEmbeddingWrapper:
         self.y_col = None
 
     def fit(self, train):
+        """Fit the random forest regressor on the training split.
+
+        :param pandas.DataFrame train: Training data with a column matching ``self.y_col``.
+        """
         assert self.y_col is not None
         self.model.fit(self.embeddings[train.index], train[self.y_col])
 
     def predict(self, test):
+        """Generate predictions for the test split.
+
+        :param pandas.DataFrame test: Test data whose index maps to embedding rows.
+        :return: Predicted target values.
+        :rtype: numpy.ndarray
+        """
         pred = self.model.predict(self.embeddings[test.index])
         return pred
 
     def validate(self, train, test):
+        """Fit on *train* and predict on *test* in one call.
+
+        :param pandas.DataFrame train: Training split.
+        :param pandas.DataFrame test: Test split.
+        :return: Predicted target values for the test split.
+        :rtype: numpy.ndarray
+        """
         self.fit(train)
         return self.predict(test)
 
     # cross_validate expects a callable that returns a model
     def __call__(self, y_col):
+        """Set the target column and return self (callable model factory interface).
+
+        :param str y_col: Name of the target column in the dataframe.
+        :return: self
+        :rtype: PrecomputedEmbeddingWrapper
+        """
         self.y_col = y_col
         return self
 

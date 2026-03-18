@@ -22,6 +22,12 @@ from da4mt.utils import WandbLoggingLoss
 
 
 class TrainingDataset(typing.TypedDict):
+    """Typed dictionary holding training (and optional validation) data for contrastive learning.
+
+    :param train: List of :class:`~sentence_transformers.InputExample` objects for training.
+    :param val: Optional validation tuple of (sentences_a, sentences_b, scores).
+    """
+
     train: List[InputExample]
     val: NotRequired[typing.Tuple[List[str], List[str], List[float]]]
 

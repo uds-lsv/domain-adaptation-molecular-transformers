@@ -72,6 +72,11 @@ def add_normalization_to_config(
 
 
 class preprocess_function:
+    """Callable that tokenizes SMILES and selects physico-chemical property labels for MTR.
+
+    Used as a batched ``datasets.Dataset.map`` function during MTR training.
+    """
+
     def __init__(self, tokenizer, id2label, subset: Literal["all", "surface"]):
         """Initialize the preprocessing function for tokenization.
 
@@ -84,6 +89,13 @@ class preprocess_function:
         self.label_names = id2label
 
     def __call__(self, examples, block_size=128):
+        """Tokenize a batch and attach the selected label values.
+
+        :param dict examples: Batch with 'smile' and 'labels' columns.
+        :param int block_size: Maximum token sequence length, defaults to 128.
+        :return: Tokenized batch with a 'label_ids' field.
+        :rtype: dict
+        """
         def _clean_property(x):
             return 0.0 if x == "" or "inf" in str(x) else float(x)
 

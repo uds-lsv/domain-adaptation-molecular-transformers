@@ -75,6 +75,13 @@ def get_adapt_training_args(model_dir: str):
 
 
 class WandbLoggingLoss(nn.Module):
+    """Loss wrapper that logs training and evaluation metrics to WandB.
+
+    Sentence-transformers' ``model.fit()`` does not use HuggingFace Trainer,
+    so this wrapper bridges the training loop with WandB by intercepting each
+    forward pass and exposing ``log_eval`` as a per-epoch callback.
+    """
+
     def __init__(self, loss_fn, group: str):
         """Wrap *loss_fn* and initialise a WandB run for contrastive training.
 
@@ -118,12 +125,25 @@ class WandbLoggingLoss(nn.Module):
         self._wandb.define_metric("*", step_metric="train/global_step", step_sync=True)
 
     def log_eval(self, score, epoch, steps):
+        """Log evaluation metrics to WandB at the end of an epoch.
+
+        :param float score: Evaluation score from the sentence-transformers evaluator.
+        :param int epoch: Current epoch index.
+        :param int steps: Current global step count.
+        """
         if not self.disabled:
             self._wandb.log(
                 {"eval/score": score, "eval/epoch": epoch, "eval/steps": steps}
             )
 
     def __call__(self, sentence_features: Iterable[Dict[str, Tensor]], labels: Tensor):
+        """Compute the loss, increment the global step and log to WandB.
+
+        :param sentence_features: Encoded sentence feature dictionaries.
+        :param torch.Tensor labels: Target similarity labels.
+        :return: Scalar loss value.
+        :rtype: torch.Tensor
+        """
         loss = self.loss_fn(sentence_features, labels)
         self.global_step += 1
         if not self.disabled:
@@ -224,6 +244,14 @@ class PhysicoChemcialPropertyExtractor:
         ), "Invalid descriptors encountered"
 
     def compute_descriptors(self, smiles):
+        """Compute physico-chemical descriptors for a single SMILES string.
+
+        Returns a zero vector for invalid molecules.
+
+        :param str smiles: Molecule in SMILES representation.
+        :return: Descriptor array of shape (num_labels,).
+        :rtype: numpy.ndarray
+        """
         mol = Chem.MolFromSmiles(smiles)
         if mol is None:
             mol_descriptors = np.full(shape=(self.num_labels), fill_value=0.0)
