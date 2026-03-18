@@ -1,8 +1,57 @@
+import logging
+import pathlib
+import sys
+from pathlib import Path
+from typing import Dict, Literal, NamedTuple, Tuple
+
 import h5py
+import numpy as np
 import pandas as pd
+from numpy.typing import NDArray
 from sklearn.ensemble import RandomForestRegressor
 
-from da4mt.finetune.eval import load_embeddings, get_logger
+
+class ModelMetadata(NamedTuple):
+    device: Literal["cpu", "cuda"]
+    embedding_dim: int
+    model_path: pathlib.Path
+    num_samples: int
+    domain_adaptation: Literal["cbert", "sbert", "mtr", "mlm"] = None
+    pretraining: Literal["mlm", "mtr"] = None
+    pretraining_size: int = None
+
+
+def get_logger():
+    logger = logging.getLogger("eamt.finetune")
+    logger.setLevel(logging.DEBUG)
+
+    print_handler = logging.StreamHandler(stream=sys.stderr)
+    print_handler.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s: %(message)s")
+    print_handler.setFormatter(formatter)
+
+    logger.addHandler(print_handler)
+    return logger
+
+
+def load_embeddings(
+    hdf5_file: Path,
+) -> Tuple[Dict[str, NDArray[np.float32]], Dict[str, ModelMetadata]]:
+    """Load embeddings from all groups in HDF5 file.
+
+    :param hdf5_file: Path to HDF5 file containing embedding datasets
+    :return: Dictionary mapping group names to embedding arrays
+    """
+    embeddings = {}
+    metadata = {}
+    with h5py.File(hdf5_file, "r") as file:
+        for name, group in file.items():
+            dataset = group["embeddings"]
+            embeddings[name] = dataset[:]  # Copy as numpy array
+            metadata[name] = ModelMetadata(**dict(dataset.attrs))
+
+    return embeddings, metadata
 
 
 class PrecomputedEmbeddingWrapper:

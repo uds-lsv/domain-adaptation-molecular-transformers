@@ -44,49 +44,14 @@ def add_prepare_pretraining_args(parser: argparse.ArgumentParser):
     return parser
 
 
-def add_prepare_splits_args(parser: argparse.ArgumentParser):
-    parser.add_argument(
-        "file", type=pathlib.Path, help="CSV files with smiles column and targets"
-    )
-    parser.add_argument(
-        "--output-dir",
-        "-o",
-        type=pathlib.Path,
-        required=True,
-        help="Directory where the preprocessed data will be saved",
-    )
-
-    parser.add_argument(
-        "--splitter",
-        nargs="+",
-        choices=["scaffold", "random", "datasail"],
-        required=True,
-    )
-
-    parser.add_argument(
-        "--num-splits", "-n", nargs="+", type=int, help="Number of k-fold splits"
-    )
-
-    parser.add_argument(
-        "--seed", default=0, type=int, help="Seed for random splitting."
-    )
-
-    return parser
-
-
 def add_prepare_parser(parser: argparse.ArgumentParser):
     from da4mt.prepare.dataset import make_data
     from da4mt.prepare.pretraining import make_pretraining
-    from da4mt.prepare.splits import make_splits
 
     subparsers = parser.add_subparsers(title="kind")
     dataset_parser = subparsers.add_parser("dataset", help="Run dataset preprocessing.")
     dataset_parser = add_prepare_dataset_args(dataset_parser)
     dataset_parser.set_defaults(func=make_data)
-
-    splits_parser = subparsers.add_parser("splits", help="Split the dataset")
-    splits_parser = add_prepare_splits_args(splits_parser)
-    splits_parser.set_defaults(func=make_splits)
 
     pretraining_parser = subparsers.add_parser(
         "pretraining", help="Run pretraining preprocessing."
@@ -237,70 +202,6 @@ def add_embed_args(parser: argparse.ArgumentParser):
     parser.add_argument("--device", choices=["cpu", "cuda"], default="cpu")
 
     parser.add_argument("--seed", type=int, default=0)
-    return parser
-
-
-def add_eval_args(parser: argparse.ArgumentParser):
-    parser.add_argument(
-        "--hdf5-file",
-        type=pathlib.Path,
-        required=True,
-        help="Path to HDF5 file containing embeddings",
-    )
-    parser.add_argument(
-        "--splits",
-        type=pathlib.Path,
-        nargs="+",
-        required=True,
-        help="Paths to JSON files containing train/val/test splits",
-    )
-    parser.add_argument(
-        "--targets",
-        type=pathlib.Path,
-        required=True,
-        help="Path to CSV file containing target values",
-    )
-
-    parser.add_argument(
-        "--model",
-        choices=["linear", "random-forest", "svm"],
-        nargs="+",
-        help="Model to train. If --task=classification and --model=linear a logistic regression model is used otherwise"
-        "a linear regression model. ",
-    )
-
-    parser.add_argument(
-        "--task",
-        choices=["classification", "regression"],
-        required=True,
-        help="Task of the dataset",
-    )
-
-    parser.add_argument(
-        "--output-dir",
-        required=True,
-        type=pathlib.Path,
-        help="Output directory where the resulting HDF5 file will be stored",
-    )
-
-    parser.add_argument(
-        "--keep-val-separate",
-        required=False,
-        action="store_true",
-        default=False,
-        help="Turns of merging validation set into training set.",
-    )
-
-    parser.add_argument(
-        "--overwrite-existing",
-        required=False,
-        default=False,
-        action="store_true",
-        help="If set, overwrites existing hdf5 results file in the --output-dir by replacing it with the embedding file and running "
-        "finetuning from scratch. If not set appends to the existing file, overwriting any results for models that already existed "
-        "when the file was created.",
-    )
-
     return parser
 
 

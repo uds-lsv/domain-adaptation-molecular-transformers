@@ -14,14 +14,12 @@ da4mt/
 ├── cli.py               # Argument parser definitions
 ├── types.py             # Type definitions
 ├── utils.py             # Shared utilities (physicochemical property extraction, etc.)
-├── splitting.py         # Dataset splitting utilities
 ├── filename_parser.py   # Model filename parsing utilities
 │
 ├── prepare/             # Data preparation and preprocessing
 │   ├── __main__.py      # CLI entry point for `python -m da4mt prepare`
 │   ├── pretraining.py   # Guacamol dataset download and preprocessing
-│   ├── dataset.py       # Downstream dataset preprocessing (physicochemical props, contrastive triples)
-│   └── splits.py        # Train/val/test split generation (random, scaffold, DataSAIL)
+│   └── dataset.py       # Downstream dataset preprocessing (physicochemical props, contrastive triples)
 │
 ├── pretrain/            # Pretraining CLI
 │   └── __main__.py      # CLI entry point for `python -m da4mt pretrain`
@@ -34,8 +32,7 @@ da4mt/
 ├── finetune/            # Embedding extraction and evaluation
 │   ├── __main__.py      # CLI entry point for `python -m da4mt finetune`
 │   ├── embed.py         # Extract embeddings from trained models
-│   ├── eval.py          # Evaluation with simple cross-validation (prepared data splits)
-│   └── eval_cv.py       # Evaluation with nested 5x5 cross-validation (rdkit utils splitting)
+│   └── eval_cv.py       # Evaluation with repeated 5x5 cross-validation (random and Butina splits)
 │
 ├── models/              # Model architectures
 │   └── bert_for_regression.py  # BERT model with regression head for MTR
@@ -97,7 +94,6 @@ external/
 
 | Directory | Purpose |
 |-----------|---------|
-| `scripts/` | Utility scripts (e.g., `check_splitability.py` for testing dataset splits) |
 | `postprocess_adme/` | Notebooks for removing censored datapoints from ADME microsom datasets |
 | `preprocess_astrazeneca/` | Preprocessing scripts for AstraZeneca datasets |
 | `models/` | Directory for storing trained model checkpoints |

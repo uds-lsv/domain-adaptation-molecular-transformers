@@ -68,15 +68,6 @@ our python version.
 pip install --ignore-requires-python useful_rdkit_utils==0.74
 ```
 
-Install the DataSAIL dependencies:
-```bash
-mamba install -c kalininalab -c conda-forge -c bioconda datasail
-```
-Because the newer Nvidia Docker images no longer include mamba/conda, datasail is not installed under the default `PYTHONPATH`, but rather `/opt/conda/lib/python3.10/site-packages`. See
-`htcondor/prepare_data.sh` for more details.
-
-> **Note:** Since development, DataSAIL has become available on PyPI (`pip install datasail`), which may eliminate the need for conda/mamba. However, we have not tested this installation method.
-
 ### Overview
 In general all steps in the pipeline are accessible as subcommands to the command line interface of the `da4mt` package.
 ```bash
@@ -117,11 +108,7 @@ guacamol_v1_valid_mtr.jsonl
 ```
 
 #### Downstream datasets
-In general the dataset preprocessing encompasses 2 steps:
-1. Precomputing the necessary labels for pretraining and domain adaptation, i.e. RDKit descriptors and triples for contrastive learning
-2. Splitting the datasets into `k` folds. `k` needs to be determined by hand
-
-The first step can be done by running
+The dataset preprocessing precomputes the necessary labels for pretraining and domain adaptation, i.e. RDKit descriptors and triples for contrastive learning. Run
 
 ```bash
 python -m da4mt prepare dataset <csvfile> -o <outputdir>
@@ -135,14 +122,6 @@ This produces the following files in `<outputdir>`, where name is the basename o
 <name>_cbert.csv   <-- Contrastive learning triples (orig, enumerated, negative)
 <name>_sbert.csv   <-- (Not used in the publication, since always worse performance)
 ```
-
-To split the files, run `python -m da4mt prepare splits <csvfile> -o <outputdir> --splitter random datasail scaffold --num-splits <k1> <k2> <k3>`. `k*` is the number of splits and needs to be determined by hand, i.e. not all datasets may be 5-fold scaffold splittable, in this case the program will exit with an error.
-
-This will create `k` files for each splitter:
-```
-<name>_<i>.<splitter>_splits.json
-```
-The files contains the indices for the `train`, `val` and `test` splits as a dictionary.
 
 For the full data preparation see `htcondor/prepare_data.sh`.
 
@@ -195,18 +174,3 @@ including the target column. The dataset is expected to be in CSV format with a 
 (An exception is the ADME microsom dataset, where the first column contains the indices that are needed to remove the censored datapoints.) After evaluation, a
 CSV file is created containing a column for each embedding model with the predictions on each group and fold on the respective test set.
 
-#### Preprint
-The results in the preprint version on [arxiv](https://arxiv.org/abs/2503.03360v2) were obtained by using simple cross validation:
-
-To execute the actual evaluation run
-```bash
-python -m da4mt.finetune.eval --hdf5-file <embedding_file> --target <data_file> --model [linear random-forest svm] --task [classification regression] --output-dir <outputdir> --splits <splits_files>
-```
-
-The `embedding_file` should be one of the files output in the previous step, of course matching the corresponding downstream dataset provided by `--target <data_file>`. `--model` specifies the model that will be used during prediction, the correct instance will be used depeneding on the `--task` argument. `--splits` expects multiple files, one for each fold, in the same format as output during the data preprocessing step. The splits should only be from one splitter, i.e. don't mix `*.scaffold_splits.json` and `*.datasail_splits.json` etc.
-
-The evaluation will first copy the `embedding_file` to the `outputdir`. If the file already exists, e.g. from previous runs, the results for new models will be appended, existing models will override the old results in the file. If the file should be fully replaced, i.e. basically starting from the clean embedding file, add the `--overwrite-existing` flag.
-
-By default the validation set `val` in the `splits_file` will be added to the training set of the downstream model, since no hyperparameter optimization is performed and the `validation` set is never actually used. If this is not desired add the `--keep-val-separate` flag. This will not use the validation set in any step.
-
-The output file will follow the same structure as the embeddings file -  for each group (=model) in the file, predictions with the downstream models are made. For each downstream model, a new group will be added in the group of the embedding model. That is, for e.g. the linear model with `mlm-bert-30` as the embedding model, the predictions will be under `mlm-bert-30/predictions/linear`. This group then contains `k` groups, one for each fold of the dataset. The name of the group is the same as the splits file. In this group there will be 4 datasets, `train, test, train_smiles, test_smiles`. `train, test` contain the actual predictions of the downstream model, `train_smiles, test_smiles` are the smiles strings of the inputs in the same order. The group of the fold contains additionally the `MAE, MSE` and `R2` scores for the train and test set as attributes.

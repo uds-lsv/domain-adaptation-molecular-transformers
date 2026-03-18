@@ -44,36 +44,6 @@ def run_eval_on_comparison_embeddings(dataset):
     run_eval(embedding_file, outdir=outdir)
 
 
-def run_eval_end2end(
-    train_file, task, pretrain_filter, splits_files, splitter, targets=None
-):
-    outdir = PATHS.RESULT_DIR / splitter
-    outdir.mkdir(parents=True, exist_ok=True)
-
-    cmd = [
-        "python",
-        "-m",
-        "da4mt",
-        "finetune",
-        str(train_file),
-        str(PATHS.ADAPT_DIR),
-        str(PATHS.PRETRAIN_DIR),
-        "--outdir",
-        str(outdir),
-        "--task",
-        task,
-        "--pretrain-filter",
-        pretrain_filter,
-        "--splits-files",
-    ] + splits_files
-
-    # Add targets to the command if they were provided
-    if targets:
-        cmd.extend(["--targets"] + targets)
-
-    # Execute the command
-    run_command(cmd)
-
 
 def main():
     parser = argparse.ArgumentParser(description="Evaluate model on a dataset.")
