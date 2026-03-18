@@ -1,3 +1,4 @@
+"""Command-line interface helpers that build argparse sub-parsers for every pipeline stage."""
 import argparse
 import pathlib
 

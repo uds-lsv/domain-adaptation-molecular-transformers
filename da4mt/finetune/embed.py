@@ -1,3 +1,4 @@
+"""Utilities for computing and storing molecule embeddings using trained models."""
 import logging
 import os
 import pathlib

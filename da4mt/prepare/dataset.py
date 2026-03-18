@@ -1,3 +1,4 @@
+"""Preprocessing pipeline for downstream datasets: descriptors, SBERT and CBERT pair generation."""
 import argparse
 import logging
 import pathlib

@@ -1,3 +1,4 @@
+"""BERT-based multi-task regression model for physico-chemical property prediction."""
 from dataclasses import dataclass
 from typing import Optional, Tuple
 

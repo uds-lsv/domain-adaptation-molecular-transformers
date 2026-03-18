@@ -1,3 +1,4 @@
+"""BERT WordPiece tokenizer training for SMILES strings."""
 import logging
 
 from tokenizers.implementations import BertWordPieceTokenizer

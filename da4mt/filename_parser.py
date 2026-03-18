@@ -1,3 +1,4 @@
+"""Utilities for parsing structured model directory names into their components."""
 import unittest
 from pathlib import Path
 from typing import NamedTuple, Optional

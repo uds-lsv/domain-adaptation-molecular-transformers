@@ -1,3 +1,4 @@
+"""Contrastive domain adaptation training (SBERT and CBERT objectives)."""
 import json
 import logging
 import pathlib

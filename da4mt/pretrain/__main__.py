@@ -1,3 +1,4 @@
+"""Entry point for the pre-training subcommand."""
 import argparse
 import logging
 import pathlib

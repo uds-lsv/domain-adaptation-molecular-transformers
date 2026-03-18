@@ -1,3 +1,4 @@
+"""Preprocessing pipeline for the GuacaMol pretraining dataset (download, descriptors, clusters)."""
 # Download Guacamol dataset from Figshare
 import hashlib
 import json

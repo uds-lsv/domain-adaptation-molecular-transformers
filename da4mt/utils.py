@@ -1,3 +1,4 @@
+"""Shared utilities: training argument factories, WandB logging, and RDKit property extraction."""
 import json
 import logging
 import os

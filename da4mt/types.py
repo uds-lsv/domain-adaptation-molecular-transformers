@@ -1,3 +1,4 @@
+"""Type aliases and constants for pre-training and adaptation methods and datasets."""
 import typing
 
 PretrainingMethod = typing.Literal["mlm", "mtr"]

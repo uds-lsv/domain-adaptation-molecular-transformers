@@ -1,3 +1,4 @@
+"""Entry point for the data preparation subcommand."""
 import argparse
 from da4mt.cli import add_prepare_parser
 

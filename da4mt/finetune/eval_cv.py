@@ -1,3 +1,4 @@
+"""Cross-validated evaluation of pre-computed molecule embeddings using random forests."""
 import logging
 import pathlib
 import sys

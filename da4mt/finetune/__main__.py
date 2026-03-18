@@ -1,3 +1,4 @@
+"""Entry point for the finetune subcommand (embed and eval steps)."""
 import argparse
 
 from da4mt.cli import add_finetune_args

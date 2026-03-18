@@ -1,3 +1,4 @@
+"""Entry point for the domain adaptation subcommand."""
 import argparse
 import logging
 import os

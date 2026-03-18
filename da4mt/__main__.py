@@ -1,3 +1,4 @@
+"""Command-line entry point for da4mt. Dispatches to prepare, pretrain, adapt and finetune subcommands."""
 import argparse
 
 from da4mt.cli import (
