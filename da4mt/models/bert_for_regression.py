@@ -21,6 +21,13 @@ class BertForRegressionConfig(BertConfig):
         *args,
         **kwargs,
     ):
+        """Initialize BertForRegressionConfig.
+
+        :param list norm_mean: Per-label mean values used for normalization.
+        :param list norm_std: Per-label standard deviation values.
+        :param int num_labels: Number of regression targets. Inferred from ``norm_mean`` if None.
+        :param str property_subset: Subset of properties to predict ('all' or 'surface').
+        """
         super().__init__(*args, **kwargs)
         self.norm_mean = norm_mean
         self.norm_std = norm_std
@@ -35,6 +42,10 @@ class BertForRegression(BertPreTrainedModel):
     _keys_to_ignore_on_load_missing = ["position_ids"]
 
     def __init__(self, config):
+        """Initialize BertForRegression from a :class:`BertForRegressionConfig`.
+
+        :param BertForRegressionConfig config: Model configuration.
+        """
         super().__init__(config)
         self.num_labels = config.num_labels
 
@@ -116,6 +127,11 @@ class BertRegressionHead(nn.Module):
     """Head for multitask regression models."""
 
     def __init__(self, config):
+        """Initialize the regression head layers.
+
+        :param BertForRegressionConfig config: Model configuration with ``hidden_size``,
+            ``hidden_dropout_prob`` and ``num_labels``.
+        """
         super(BertRegressionHead, self).__init__()
         self.dense = nn.Linear(config.hidden_size, config.hidden_size)
         self.dropout = nn.Dropout(config.hidden_dropout_prob)

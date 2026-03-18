@@ -19,6 +19,10 @@ from transformers import (
 
 class tokenizer_function:
     def __init__(self, tokenizer):
+        """Store the tokenizer to use for tokenization.
+
+        :param transformers.BertTokenizerFast tokenizer: Tokenizer instance.
+        """
         self.tokenizer = tokenizer
 
     def __call__(self, examples, block_size=128, text_column_name="text"):

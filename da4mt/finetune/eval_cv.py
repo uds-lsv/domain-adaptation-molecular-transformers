@@ -58,6 +58,10 @@ def load_embeddings(
 
 class PrecomputedEmbeddingWrapper:
     def __init__(self, embeddings):
+        """Initialize the wrapper with a pre-computed embedding matrix.
+
+        :param numpy.ndarray embeddings: Array of shape (n_molecules, embedding_dim).
+        """
         self.embeddings = embeddings
         self.model = RandomForestRegressor(random_state=42, n_jobs=-1)
         self.y_col = None

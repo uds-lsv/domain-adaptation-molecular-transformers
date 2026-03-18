@@ -73,6 +73,12 @@ def add_normalization_to_config(
 
 class preprocess_function:
     def __init__(self, tokenizer, id2label, subset: Literal["all", "surface"]):
+        """Initialize the preprocessing function for tokenization.
+
+        :param transformers.BertTokenizerFast tokenizer: Tokenizer instance.
+        :param list id2label: Ordered list of all label names.
+        :param str subset: Property subset to include ('all' or 'surface').
+        """
         self.tokenizer = tokenizer
         self.subset = subset
         self.label_names = id2label

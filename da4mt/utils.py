@@ -76,6 +76,16 @@ def get_adapt_training_args(model_dir: str):
 
 class WandbLoggingLoss(nn.Module):
     def __init__(self, loss_fn, group: str):
+        """Wrap *loss_fn* and initialise a WandB run for contrastive training.
+
+        Sentence-transformers' ``model.fit()`` does not use HuggingFace Trainer,
+        so WandB logging must be set up manually. This wrapper intercepts each
+        forward pass to log the training loss and exposes ``log_eval`` as an
+        end-of-epoch callback compatible with ``model.fit(callback=...)``.
+
+        :param torch.nn.Module loss_fn: Sentence-transformers loss to wrap.
+        :param str group: WandB run group name (typically the output path stem).
+        """
         super().__init__()
         self.loss_fn = loss_fn
         self.global_step = 0
@@ -186,6 +196,11 @@ class PhysicoChemcialPropertyExtractor:
         ]
 
     def __init__(self, logger, subset="all"):
+        """Initialize the extractor and build the RDKit descriptor calculator.
+
+        :param logging.Logger logger: Logger instance.
+        :param str subset: Property subset to compute ('all' or 'surface').
+        """
         super().__init__()
 
         # Ipc takes on extremly large values for some molecules 10^10 - 10^195 in e.g. the sider and freesolv datasets
