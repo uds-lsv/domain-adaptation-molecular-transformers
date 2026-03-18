@@ -11,6 +11,7 @@ from da4mt.utils import get_adapt_training_args
 
 
 def get_args():
+    """Parse and return command-line arguments for domain adaptation."""
     parser = argparse.ArgumentParser()
     parser = add_adapt_args(parser)
     args = parser.parse_args()
@@ -30,6 +31,7 @@ def get_args():
 
 
 def get_logger():
+    """Create and return a configured logger for the domain adaptation module."""
     logger = logging.getLogger("eamt.adapt")
     logger.setLevel(logging.DEBUG)
 
@@ -44,6 +46,14 @@ def get_logger():
 
 
 def run_domain_adaptation(args):
+    """Run the domain adaptation pipeline based on the parsed arguments.
+
+    Selects the adaptation method (mlm, mtr, sbert or cbert) from ``args.method``
+    and invokes the corresponding training routine. Skips adaptation if the output
+    directory already exists and is non-empty.
+
+    :param argparse.Namespace args: Parsed command-line arguments.
+    """
     logger = get_logger()
 
     dataset_name = args.train_file.stem

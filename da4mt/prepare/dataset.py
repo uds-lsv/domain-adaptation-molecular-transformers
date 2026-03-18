@@ -15,6 +15,7 @@ from da4mt.utils import extract_physicochemical_props, randomize_smiles
 
 
 def get_logger():
+    """Create and return a configured logger for the dataset preparation module."""
     logger = logging.getLogger("eamt.perpare.dataset")
     logger.setLevel(logging.DEBUG)
 
@@ -29,6 +30,11 @@ def get_logger():
 
 
 def validate_arguments(args):
+    """Validate dataset preparation arguments.
+
+    :param argparse.Namespace args: Parsed arguments with ``file`` and ``output_dir`` fields.
+    :raises ValueError: If the input file or output directory path is invalid.
+    """
     if not args.file.exists():
         raise ValueError(f"{args.file} does not seem to be a valid path")
 
@@ -111,6 +117,17 @@ def make_sbert(
     name: str,
     seed: int,
 ):
+    """Generate and save SMILES pair data for SBERT domain adaptation.
+
+    Creates pairs of (original SMILES, enumerated or random SMILES) with a
+    binary label indicating whether the pair is an enumeration of the same
+    molecule, and writes them to ``<output_dir>/<name>_sbert.csv``.
+
+    :param pandas.DataFrame df: Dataset containing a ``smiles`` column.
+    :param pathlib.Path output_dir: Directory where the output CSV will be saved.
+    :param str name: Dataset name used as the output filename stem.
+    :param int seed: Random seed for reproducibility.
+    """
     logger = get_logger()
     pairs = create_pairs(df["smiles"].to_list(), p=0.5, seed=seed)
     enumerated_smiles_df = pd.DataFrame(
@@ -131,6 +148,17 @@ def make_cbert(
     name: str,
     seed,
 ):
+    """Generate and save SMILES triplet data for CBERT domain adaptation.
+
+    Creates (anchor, positive, hard_negative) triplets where the positive is
+    an enumeration of the anchor and the negative is a randomly sampled other
+    molecule. Writes them to ``<output_dir>/<name>_cbert.csv``.
+
+    :param pandas.DataFrame df: Dataset containing a ``smiles`` column.
+    :param pathlib.Path output_dir: Directory where the output CSV will be saved.
+    :param str name: Dataset name used as the output filename stem.
+    :param seed: Random seed for reproducibility.
+    """
     logger = get_logger()
     outfile = output_dir / f"{name}_cbert.csv"
     triplets = create_triplets(df["smiles"].to_list(), seed=seed)
@@ -185,6 +213,11 @@ def create_triplets(smiles: List[str], seed: int = None) -> List[Tuple[str, str,
 
 
 def get_args():
+    """Parse and validate command-line arguments for dataset preparation.
+
+    :return: Validated parsed arguments.
+    :rtype: argparse.Namespace
+    """
     parser = argparse.ArgumentParser()
     parser = add_prepare_dataset_args(parser)
 
@@ -194,6 +227,14 @@ def get_args():
 
 
 def make_data(args):
+    """Run the full dataset preparation pipeline.
+
+    Reads the input CSV, generates SBERT pairs, CBERT triplets and
+    physico-chemical descriptors, and writes all outputs to ``args.output_dir``.
+
+    :param argparse.Namespace args: Parsed arguments with ``file``, ``output_dir``
+        and ``seed`` fields.
+    """
     validate_arguments(args)
     logger = get_logger()
 

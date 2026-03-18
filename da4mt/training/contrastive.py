@@ -27,16 +27,36 @@ class TrainingDataset(typing.TypedDict):
 
 
 def prepare_sbert_data(sample) -> InputExample:
+    """Convert a raw SBERT data row to a :class:`~sentence_transformers.InputExample`.
+
+    :param tuple sample: A (smiles_a, smiles_b, is_enumerated) tuple.
+    :return: InputExample with both SMILES strings and the enumeration label.
+    :rtype: sentence_transformers.InputExample
+    """
     smiles_a, smiles_b, is_enumerated = sample
     return InputExample(texts=[smiles_a, smiles_b], label=float(is_enumerated))
 
 
 def prepare_cbert_data(sample) -> InputExample:
+    """Convert a raw CBERT triplet row to a :class:`~sentence_transformers.InputExample`.
+
+    :param tuple sample: A (sent1, sent0, hard_neg) tuple.
+    :return: InputExample with anchor, positive and hard-negative texts.
+    :rtype: sentence_transformers.InputExample
+    """
     sent1, sent0, hard_neg = sample
     return InputExample(texts=[sent0, sent1, hard_neg])
 
 
 def prepare_example(objective: Literal["sbert", "cbert"], example):
+    """Dispatch a raw data row to the appropriate InputExample converter.
+
+    :param str objective: Contrastive objective, either 'sbert' or 'cbert'.
+    :param tuple example: Raw data row matching the schema of the chosen objective.
+    :return: Converted InputExample.
+    :rtype: sentence_transformers.InputExample
+    :raises ValueError: If *objective* is not 'sbert' or 'cbert'.
+    """
     if objective == "sbert":
         example_loader = prepare_sbert_data
     elif objective == "cbert":
@@ -55,6 +75,17 @@ def train_model(
     objective: Literal["sbert", "cbert"],
     training_args: TrainingArguments,
 ):
+    """Build and train a SentenceTransformer model for contrastive domain adaptation.
+
+    :param pathlib.Path model_path: Path to the pretrained BERT model.
+    :param pathlib.Path output_path: Directory used as the WandB run group name.
+    :param TrainingDataset data: Dictionary with 'train' (and optional 'val') splits.
+    :param logging.Logger logger: Logger instance.
+    :param str objective: Contrastive objective ('sbert' or 'cbert').
+    :param transformers.TrainingArguments training_args: Training hyper-parameters.
+    :return: Trained model and its best evaluation score.
+    :rtype: tuple[SentenceTransformer, float]
+    """
     logger.info(f"Running domain adaptation with {objective}.")
     logger.info(f"Loading model from {model_path}.")
     word_embedding_model = models.Transformer(
@@ -108,6 +139,14 @@ def train_model(
 
 
 def load_data(train_fp, method: Literal["cbert", "sbert"], splits_fp=None):
+    """Load contrastive training data from a CSV file.
+
+    :param pathlib.Path train_fp: Path to the CSV file (sbert or cbert format).
+    :param str method: Contrastive method ('sbert' or 'cbert').
+    :param pathlib.Path splits_fp: Optional path to a JSON file with 'train'/'val' index splits.
+    :return: A :class:`TrainingDataset` dictionary with 'train' and optional 'val' keys.
+    :rtype: TrainingDataset
+    """
     df = pd.read_csv(train_fp)
     samples = [prepare_example(method, e) for e in df.itertuples(index=False)]
 

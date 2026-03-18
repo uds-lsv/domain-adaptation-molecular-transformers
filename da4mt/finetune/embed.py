@@ -47,6 +47,7 @@ def seed_everything(seed: int, deterministic_cudnn: bool = True) -> None:
 
 
 def get_logger():
+    """Create and return a configured logger for the embedding module."""
     logger = logging.getLogger("eamt.embed")
     logger.setLevel(logging.DEBUG)
 
@@ -100,6 +101,15 @@ def embed_smiles(
     device: Literal["cpu", "cuda"],
     logger: logging.Logger,
 ) -> npt.NDArray:
+    """Compute embeddings for a list of SMILES strings using the model at *model_path*.
+
+    :param pathlib.Path model_path: Path to the model directory.
+    :param list smiles: List of SMILES strings to embed.
+    :param str device: Inference device ('cpu' or 'cuda').
+    :param logging.Logger logger: Logger instance.
+    :return: Embedding array of shape (n_molecules, embedding_dim).
+    :rtype: numpy.ndarray
+    """
     model: SentenceTransformer = load_model(model_path, logger)
     embeddings: npt.NDArray = model.encode(
         smiles, batch_size=256, device=device, convert_to_numpy=True
@@ -178,6 +188,20 @@ def embed(
     seed: int,
     logger: logging.Logger,
 ):
+    """Compute and save embeddings for all models in *pretrain_dir* and *adapted_dir*.
+
+    Iterates over all pretrained and domain-adapted models that match the dataset
+    name derived from *train_file*, computes SMILES embeddings and stores them in
+    an HDF5 file inside *output_dir*.
+
+    :param pathlib.Path train_file: CSV file with a ``smiles`` column.
+    :param pathlib.Path pretrain_dir: Directory containing pretrained model directories.
+    :param pathlib.Path adapted_dir: Directory containing domain-adapted model directories.
+    :param pathlib.Path output_dir: Directory where HDF5 embedding files will be written.
+    :param str device: Inference device ('cpu' or 'cuda').
+    :param int seed: Random seed for reproducibility.
+    :param logging.Logger logger: Logger instance.
+    """
     dataset = pd.read_csv(train_file)
     smiles = dataset["smiles"].to_list()
 
@@ -215,6 +239,10 @@ def embed(
 
 
 def embed_cli_wrapper(args):
+    """Parse CLI arguments and delegate to :func:`embed`.
+
+    :param argparse.Namespace args: Parsed command-line arguments.
+    """
     logger = get_logger()
     logger.debug(args)
 

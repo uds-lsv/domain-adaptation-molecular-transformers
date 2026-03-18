@@ -6,6 +6,13 @@ from da4mt.types import VALID_ADAPT_METHODS
 
 
 def existing_directory(arg):
+    """Validate that ``arg`` is an existing directory path.
+
+    :param str arg: Command-line argument value.
+    :raises argparse.ArgumentTypeError: If the path does not exist or is not a directory.
+    :return: Absolute path of the validated directory.
+    :rtype: pathlib.Path
+    """
     path = pathlib.Path(arg)
     if not path.exists() or not path.is_dir():
         raise argparse.ArgumentTypeError(
@@ -15,6 +22,12 @@ def existing_directory(arg):
 
 
 def add_prepare_dataset_args(parser: argparse.ArgumentParser):
+    """Add arguments for the ``prepare dataset`` sub-command to *parser*.
+
+    :param argparse.ArgumentParser parser: Parser to extend.
+    :return: Extended parser.
+    :rtype: argparse.ArgumentParser
+    """
     parser.add_argument(
         "file", type=pathlib.Path, help="CSV files with smiles column and targets"
     )
@@ -34,6 +47,12 @@ def add_prepare_dataset_args(parser: argparse.ArgumentParser):
 
 
 def add_prepare_pretraining_args(parser: argparse.ArgumentParser):
+    """Add arguments for the ``prepare pretraining`` sub-command to *parser*.
+
+    :param argparse.ArgumentParser parser: Parser to extend.
+    :return: Extended parser.
+    :rtype: argparse.ArgumentParser
+    """
     parser.add_argument(
         "--output-dir",
         "-o",
@@ -46,6 +65,12 @@ def add_prepare_pretraining_args(parser: argparse.ArgumentParser):
 
 
 def add_prepare_parser(parser: argparse.ArgumentParser):
+    """Register ``dataset`` and ``pretraining`` sub-parsers under the prepare command.
+
+    :param argparse.ArgumentParser parser: The prepare sub-command parser.
+    :return: Extended parser with dataset and pretraining sub-commands.
+    :rtype: argparse.ArgumentParser
+    """
     from da4mt.prepare.dataset import make_data
     from da4mt.prepare.pretraining import make_pretraining
 
@@ -64,6 +89,15 @@ def add_prepare_parser(parser: argparse.ArgumentParser):
 
 
 def add_pretrain_args(parser: argparse.ArgumentParser):
+    """Add arguments for the ``pretrain`` sub-command to *parser*.
+
+    Covers MLM and MTR pretraining, tokenizer training, dataset selection
+    and cluster-based sub-sampling options.
+
+    :param argparse.ArgumentParser parser: Parser to extend.
+    :return: Extended parser.
+    :rtype: argparse.ArgumentParser
+    """
     parser.add_argument(
         "data_dir",
         help="Directory containing the output of the data preparation script.",
@@ -161,6 +195,12 @@ def add_pretrain_args(parser: argparse.ArgumentParser):
 
 
 def add_adapt_args(parser: argparse.ArgumentParser):
+    """Add arguments for the ``adapt`` sub-command to *parser*.
+
+    :param argparse.ArgumentParser parser: Parser to extend.
+    :return: Extended parser.
+    :rtype: argparse.ArgumentParser
+    """
     parser.add_argument(
         "model", help="Pre-trained model to be adapted.", type=pathlib.Path
     )
@@ -184,6 +224,12 @@ def add_adapt_args(parser: argparse.ArgumentParser):
 
 
 def add_embed_args(parser: argparse.ArgumentParser):
+    """Add arguments for the ``finetune embed`` sub-command to *parser*.
+
+    :param argparse.ArgumentParser parser: Parser to extend.
+    :return: Extended parser.
+    :rtype: argparse.ArgumentParser
+    """
     parser.add_argument("train_file", type=pathlib.Path)
 
     parser.add_argument(
@@ -207,6 +253,12 @@ def add_embed_args(parser: argparse.ArgumentParser):
 
 
 def add_eval_cv_args(parser: argparse.ArgumentParser):
+    """Add arguments for the ``finetune eval`` sub-command to *parser*.
+
+    :param argparse.ArgumentParser parser: Parser to extend.
+    :return: Extended parser.
+    :rtype: argparse.ArgumentParser
+    """
     parser.add_argument(
         "--embedding-file",
         type=pathlib.Path,
@@ -231,6 +283,12 @@ def add_eval_cv_args(parser: argparse.ArgumentParser):
 
 
 def add_finetune_args(parser: argparse.ArgumentParser):
+    """Register ``embed`` and ``eval`` sub-parsers under the finetune command.
+
+    :param argparse.ArgumentParser parser: The finetune sub-command parser.
+    :return: Extended parser with embed and eval sub-commands.
+    :rtype: argparse.ArgumentParser
+    """
     from da4mt.finetune.embed import embed_cli_wrapper
 
     # from da4mt.finetune.eval import eval

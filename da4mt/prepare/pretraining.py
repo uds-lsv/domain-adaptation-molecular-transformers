@@ -19,6 +19,7 @@ from da4mt.utils import extract_physicochemical_props
 
 
 def get_logger():
+    """Create and return a configured logger for the pretraining preparation module."""
     logger = logging.getLogger("eamt.perpare.pretraining")
     logger.setLevel(logging.DEBUG)
 
@@ -33,6 +34,14 @@ def get_logger():
 
 
 def make_descriptors(output_dir: pathlib.Path):
+    """Compute physico-chemical descriptors for the GuacaMol train and validation sets.
+
+    Reads ``guacamol_v1_train.smiles`` and ``guacamol_v1_valid.smiles`` from
+    *output_dir*, computes RDKit descriptors and writes the labeled JSONL datasets
+    and normalization values back to *output_dir*.
+
+    :param pathlib.Path output_dir: Directory containing the GuacaMol SMILES files.
+    """
     logger = get_logger()
     train_smiles_file = output_dir / "guacamol_v1_train.smiles"
     validation_smiles_file = output_dir / "guacamol_v1_valid.smiles"
@@ -58,6 +67,14 @@ def make_descriptors(output_dir: pathlib.Path):
 
 
 def download_guacamole(output_dir: pathlib.Path):
+    """Download and verify the GuacaMol dataset splits from Figshare.
+
+    Downloads train, validation and test SMILES files and verifies their
+    MD5 checksums to ensure data integrity.
+
+    :param pathlib.Path output_dir: Directory where the downloaded files will be saved.
+    :raises ValueError: If an MD5 checksum does not match after downloading.
+    """
     logger = get_logger()
 
     # Guacamol dataset download Urls, taken from to official guacamol repo
@@ -143,6 +160,15 @@ def select_diverse_sample(
 
 
 def make_clusters(output_dir: pathlib.Path):
+    """Cluster the GuacaMol training set with BitBirch and save cluster assignments.
+
+    Computes Morgan fingerprints, fits a BitBirch clustering model, sorts clusters
+    by descending size, and saves both the full cluster assignment and 30%/60%
+    diverse sub-samples to *output_dir*.
+
+    :param pathlib.Path output_dir: Directory containing ``guacamol_v1_train.smiles``
+        and where cluster JSON files will be written.
+    """
     from external.bitbirch import BitBirch
 
     logger = get_logger()
@@ -203,6 +229,13 @@ def make_clusters(output_dir: pathlib.Path):
 
 
 def make_pretraining(args):
+    """Run the full pretraining data preparation pipeline.
+
+    Creates the output directory then sequentially downloads the GuacaMol
+    dataset, computes descriptors and generates cluster assignments.
+
+    :param argparse.Namespace args: Parsed arguments with an ``output_dir`` field.
+    """
     args.output_dir.mkdir(exist_ok=True)
 
     download_guacamole(args.output_dir)

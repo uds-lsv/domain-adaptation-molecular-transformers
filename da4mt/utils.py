@@ -32,6 +32,12 @@ from transformers import TrainingArguments
 
 
 def get_pretraining_args(model_dir: str):
+    """Build and return :class:`~transformers.TrainingArguments` for pre-training.
+
+    :param str model_dir: Output directory for checkpoints and logs.
+    :return: Pre-configured training arguments.
+    :rtype: transformers.TrainingArguments
+    """
     return TrainingArguments(
         # Model / Trainer
         output_dir=model_dir,
@@ -55,6 +61,12 @@ def get_pretraining_args(model_dir: str):
 
 
 def get_adapt_training_args(model_dir: str):
+    """Build and return :class:`~transformers.TrainingArguments` for domain adaptation.
+
+    :param str model_dir: Output directory for checkpoints.
+    :return: Pre-configured training arguments.
+    :rtype: transformers.TrainingArguments
+    """
     return TrainingArguments(
         # Model / Trainer
         output_dir=model_dir,
@@ -426,6 +438,12 @@ class ScaledLinearRegression(MultiOutputMixin, RegressorMixin, LinearModel):
 def get_task_head_and_metrics(
     task: Literal["regression", "classification"],
 ) -> Tuple[BaseEstimator, Metrics]:
+    """Return an appropriate estimator and metrics class for the given task type.
+
+    :param str task: Task type, either 'regression' or 'classification'.
+    :return: A tuple of (sklearn estimator, Metrics subclass).
+    :rtype: tuple[BaseEstimator, type[Metrics]]
+    """
     if task == "classification":
         # SVM does not support multiple labels by default
         svm = SVC(probability=True, C=5.0, kernel="rbf", random_state=42)

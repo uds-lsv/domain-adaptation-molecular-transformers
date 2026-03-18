@@ -21,6 +21,7 @@ def add_data_dir_to_file(args, data_dir: pathlib.Path, arg_name: str):
 
 
 def get_args():
+    """Parse and return command-line arguments for pre-training."""
     parser = argparse.ArgumentParser()
     parser = add_pretrain_args(parser)
     args = parser.parse_args()
@@ -29,6 +30,7 @@ def get_args():
 
 
 def get_logger():
+    """Create and return a configured logger for the pre-training module."""
     logger = logging.getLogger("eamt.pretrain")
     logger.setLevel(logging.DEBUG)
 
@@ -43,6 +45,13 @@ def get_logger():
 
 
 def run_pretraining(args):
+    """Run the pre-training pipeline based on the parsed arguments.
+
+    Optionally trains the tokenizer, then pre-trains the BERT model with
+    the MLM and/or MTR objective depending on the flags in ``args``.
+
+    :param argparse.Namespace args: Parsed command-line arguments.
+    """
     logger = get_logger()
 
     # If file is not a full path we assume that the file is

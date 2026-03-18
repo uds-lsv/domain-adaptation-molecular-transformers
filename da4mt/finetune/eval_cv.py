@@ -23,6 +23,7 @@ class ModelMetadata(NamedTuple):
 
 
 def get_logger():
+    """Create and return a configured logger for the evaluation module."""
     logger = logging.getLogger("eamt.finetune")
     logger.setLevel(logging.DEBUG)
 
@@ -80,6 +81,15 @@ class PrecomputedEmbeddingWrapper:
 
 
 def eval(args):
+    """Run cross-validated evaluation of pre-computed embeddings.
+
+    Loads embeddings from the HDF5 file at ``args.embedding_file``, performs
+    random and Butina cluster-based cross-validation with a random forest
+    regressor, and writes results as CSV files to ``args.output_dir``.
+
+    :param argparse.Namespace args: Parsed arguments with ``embedding_file``,
+        ``data_dir`` and ``output_dir`` fields.
+    """
     # Import locally to avoid import exception, since not currently installed in
     # the docker image. Since __main__ imports from cli.py which imports eval from here
     # global imports will be tried, hence resulting in an exception no matter if we are

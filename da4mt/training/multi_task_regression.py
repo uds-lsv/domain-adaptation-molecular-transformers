@@ -181,6 +181,21 @@ def pretrain_mtr(
     selection: Literal["random", "cluster"] = "random",
     cluster_file: pathlib.Path = None,
 ):
+    """Pre-train a BERT model from scratch using the Multi-Task Regression objective.
+
+    :param str model_dir: Output directory for the trained model.
+    :param BertConfig model_config: BERT model configuration.
+    :param transformers.TrainingArguments training_args: HuggingFace training arguments.
+    :param str tokenizer_path: Path prefix for the trained tokenizer vocabulary file.
+    :param str train_file: Path to the JSONL training file.
+    :param str validation_file: Path to the JSONL validation file.
+    :param str normalization_file: Path to the JSON normalization values file.
+    :param float train_size: Fraction of the training data to use (0.0–1.0).
+    :param logging.Logger logger: Logger instance.
+    :param str property_subset: Subset of properties to predict ('all' or 'surface').
+    :param str selection: How to sub-sample training data ('random' or 'cluster').
+    :param pathlib.Path cluster_file: Path to cluster indices JSON when selection='cluster'.
+    """
     tokenizer = BertTokenizerFast(f"{tokenizer_path}-vocab.txt")
 
     model_config, orig_labels = add_normalization_to_config(

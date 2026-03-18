@@ -5,6 +5,13 @@ from tokenizers.implementations import BertWordPieceTokenizer
 
 
 def train_tokenizer(dataset_path: str, output_path: str, name, logger: logging.Logger):
+    """Train a BERT WordPiece tokenizer on a SMILES dataset.
+
+    :param str dataset_path: Path to the training file (one SMILES per line).
+    :param str output_path: Directory where the vocabulary file will be saved.
+    :param name: Name prefix for the output vocabulary file.
+    :param logging.Logger logger: Logger instance.
+    """
     tokenizer = BertWordPieceTokenizer(
         clean_text=True,
         handle_chinese_chars=False,

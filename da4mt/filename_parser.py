@@ -5,6 +5,14 @@ from typing import NamedTuple, Optional
 
 
 class ModelComponents(NamedTuple):
+    """Named tuple holding the parsed components of a model directory name.
+
+    :param dataset: Name of the downstream dataset, or None for pretrained-only models.
+    :param domain_adaptation: Domain adaptation method (mlm, mtr, sbert, cbert), or None.
+    :param pretraining: Pre-training method (none, mlm, mtr).
+    :param train_size: Percentage of the pre-training corpus used (0–100).
+    """
+
     dataset: Optional[str]
     domain_adaptation: Optional[str]
     pretraining: str
@@ -83,7 +91,10 @@ def parse_model_name(file_path: Path) -> ModelComponents:
 
 
 class TestParseModelName(unittest.TestCase):
+    """Unit tests for :func:`parse_model_name`."""
+
     def test_valid_inputs(self):
+        """Test that valid model name strings are parsed correctly."""
         test_cases = [
             (
                 "adme_solubility_cbert_none-bert-0",
@@ -156,6 +167,7 @@ class TestParseModelName(unittest.TestCase):
                 self.assertEqual(result, expected_output)
 
     def test_invalid_format(self):
+        """Test that model names with invalid format raise ValueError."""
         invalid_names = [
             "invalid_name",
             "missing_bert_separator_0",
@@ -173,14 +185,17 @@ class TestParseModelName(unittest.TestCase):
                     parse_model_name(Path(name))
 
     def test_invalid_domain_adaptation(self):
+        """Test that an invalid domain adaptation token raises ValueError."""
         with self.assertRaises(ValueError):
             parse_model_name(Path("dataset_invalid_none-bert-0"))
 
     def test_invalid_pretraining(self):
+        """Test that an invalid pretraining token raises ValueError."""
         with self.assertRaises(ValueError):
             parse_model_name(Path("dataset_cbert_invalid-bert-0"))
 
     def test_invalid_train_size(self):
+        """Test that invalid train size tokens raise ValueError."""
         invalid_sizes = [
             "dataset_cbert_none-bert-invalid",
             "dataset_cbert_none-bert--1",
@@ -191,6 +206,7 @@ class TestParseModelName(unittest.TestCase):
                     parse_model_name(Path(name))
 
     def test_complex_dataset_name(self):
+        """Test parsing of a model name with a multi-token dataset name."""
         result = parse_model_name(
             Path("complex_dataset_name_with_underscores_cbert_none-bert-50")
         )
@@ -200,10 +216,12 @@ class TestParseModelName(unittest.TestCase):
         self.assertEqual(result.train_size, 50)
 
     def test_large_train_size(self):
+        """Test that large integer train sizes are parsed correctly."""
         result = parse_model_name(Path("dataset_cbert_none-bert-1000000"))
         self.assertEqual(result.train_size, 1000000)
 
     def test_namedtuple_attributes(self):
+        """Test that the returned object has the expected NamedTuple attributes."""
         result = parse_model_name(Path("adme_solubility_cbert_none-bert-0"))
         self.assertTrue(hasattr(result, "dataset"))
         self.assertTrue(hasattr(result, "domain_adaptation"))
@@ -211,6 +229,7 @@ class TestParseModelName(unittest.TestCase):
         self.assertTrue(hasattr(result, "train_size"))
 
     def test_optional_components(self):
+        """Test that dataset and domain_adaptation are None for pretrained-only names."""
         result = parse_model_name(Path("none-bert-0"))
         self.assertIsNone(result.dataset)
         self.assertIsNone(result.domain_adaptation)
